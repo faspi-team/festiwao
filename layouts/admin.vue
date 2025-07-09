@@ -14,9 +14,8 @@
               <span class="pc-mtext">Dashboard</span>
             </NuxtLink>
           </li>
-
           <li class="pc-item">
-            <NuxtLink to="/" class="pc-link">
+            <NuxtLink to="/invitations" class="pc-link">
               <span class="pc-micon"><i class="ti ti-play-card"></i></span>
               <span class="pc-mtext">Invitaciones</span>
             </NuxtLink>
@@ -53,26 +52,14 @@
               aria-expanded="false"
             >
               <img src="/assets/images/user/avatar-2.jpg" alt="user-image" class="user-avtar">
-              <span>{{ truncate(user?.email, 20) }}</span>
+              <span>{{ truncate(user?.email || '', 20) }}</span>
             </a>
             <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown">
-              <div class="dropdown-header">
-                <div class="d-flex mb-1">
-                  <div class="flex-shrink-0">
-                    <img src="/assets/images/user/avatar-2.jpg" alt="user-image" class="user-avtar wid-35">
-                  </div>
-                  <div class="flex-grow-1 ms-3">
-                    <h6 class="mb-1">{{ user?.name }}</h6>
-                    <span>{{ truncate(user?.email, 10) }}</span>
-                  </div>
-                  <a href="#!" class="pc-head-link bg-transparent"><i class="ti ti-power text-danger"></i></a>
-                </div>
-              </div>
               <ul class="nav drp-tabs nav-fill nav-tabs" id="mydrpTab" role="tablist">
                 <li class="nav-item" role="presentation">
                   <a href="#" class="dropdown-item" @click="clickLogout">
                     <i class="ti ti-power"></i>
-                    <span>Logout</span>
+                    <span>Cerrar sesión</span>
                   </a>
                 </li>
               </ul>
@@ -123,7 +110,7 @@
 
 <script setup lang="ts">
   import { useAuth } from '~/composables/useAuth'
-  import { navigateTo, useHead, onMounted } from '#imports'
+  import { navigateTo, useHead } from '#imports'
   
   const { logout } = useAuth()
 
