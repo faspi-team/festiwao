@@ -19,6 +19,7 @@ export interface Invitation {
   is_active: boolean
   created_at: string
   updated_at: string
+  photo_url?: string
 }
 
 export interface RSVPResponse {
@@ -32,11 +33,11 @@ export interface RSVPResponse {
 }
 
 export interface CreateInvitationData {
-  title?: string
   template_id?: string
   groom_name?: string
   bride_name?: string
   event_date?: string
   venue?: string
   description?: string
+  photo_url?: string
 } 

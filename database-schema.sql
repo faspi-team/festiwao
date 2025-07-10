@@ -20,6 +20,7 @@ CREATE TABLE invitations (
   description TEXT,
   unique_url VARCHAR(255) UNIQUE NOT NULL,
   is_active BOOLEAN DEFAULT true,
+  photo_url VARCHAR(255),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -56,7 +57,7 @@ CREATE POLICY "Authenticated users can view all invitations" ON invitations
   FOR SELECT USING (auth.uid() is not null);
 
 CREATE POLICY "Users can insert their own invitations" ON invitations
-  FOR INSERT WITH CHECK (auth.uid() = user_id);
+    FOR INSERT WITH CHECK (user_id = auth.uid());
 
 CREATE POLICY "Users can update their own invitations" ON invitations
   FOR UPDATE USING (auth.uid() = user_id);

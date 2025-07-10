@@ -5,11 +5,9 @@
         <div class="card-header">
           <div class="d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Invitaciones</h5>
-            <div>
-              <button class="btn btn-primary" @click="showCreateModal = true">
-                <i class="ti ti-plus"></i> Nueva Invitación
-              </button>
-            </div>
+            <NuxtLink to="/invitations/create" class="btn btn-primary">
+              <i class="ti ti-plus"></i> Nueva Invitación
+            </NuxtLink>
           </div>
         </div>
         <div class="card-body">
@@ -61,6 +59,9 @@
                   
                   <div class="invitation-preview mb-3">
                     <div class="text-center">
+                      <div v-if="invitation.photo_url" class="mb-2">
+                        <img :src="invitation.photo_url" alt="Foto invitación" class="img-thumbnail" style="max-height: 120px;">
+                      </div>
                       <div class="couple-names">
                         <span class="groom">{{ invitation.groom_name || 'Novio' }}</span>
                         <span class="and">&</span>
@@ -88,78 +89,6 @@
       </div>
     </div>
   </div>
-
-  <div v-if="showCreateModal" class="modal fade show" style="display: block;" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Crear Nueva Invitación</h5>
-          <button type="button" class="btn-close" @click="showCreateModal = false"></button>
-        </div>
-        <div class="modal-body">
-          <form @submit.prevent="createInvitation">
-            <div class="row">
-              <div class="col-md-6">
-                <div class="mb-3">
-                  <label class="form-label">Plantilla</label>
-                  <select v-model="newInvitation.template_id" class="form-select">
-                    <option value="">Seleccionar plantilla</option>
-                    <option v-for="template in templates" :key="template.id" :value="template.id">
-                      {{ template.name }}
-                    </option>
-                  </select>
-                </div>
-              </div>
-            </div>
-            
-            <div class="row">
-              <div class="col-md-6">
-                <div class="mb-3">
-                  <label class="form-label">Nombre del Novio</label>
-                  <input v-model="newInvitation.groom_name" type="text" class="form-control" placeholder="Nombre del novio">
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="mb-3">
-                  <label class="form-label">Nombre de la Novia</label>
-                  <input v-model="newInvitation.bride_name" type="text" class="form-control" placeholder="Nombre de la novia">
-                </div>
-              </div>
-            </div>
-            
-            <div class="row">
-              <div class="col-md-6">
-                <div class="mb-3">
-                  <label class="form-label">Fecha del Evento</label>
-                  <input v-model="newInvitation.event_date" type="datetime-local" class="form-control">
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="mb-3">
-                  <label class="form-label">Lugar</label>
-                  <input v-model="newInvitation.venue" type="text" class="form-control" placeholder="Dirección del evento">
-                </div>
-              </div>
-            </div>
-            
-            <div class="mb-3">
-              <label class="form-label">Descripción</label>
-              <textarea v-model="newInvitation.description" class="form-control" rows="3" placeholder="Detalles adicionales del evento"></textarea>
-            </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" @click="showCreateModal = false">Cancelar</button>
-          <button type="button" class="btn btn-primary" @click="createInvitation" :disabled="creating">
-            <span v-if="creating" class="spinner-border spinner-border-sm me-2"></span>
-            Crear Invitación
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <div v-if="showCreateModal" class="modal-backdrop fade show"></div>
 </template>
 
 <script setup lang="ts">
