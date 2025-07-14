@@ -15,6 +15,8 @@ CREATE TABLE invitations (
   template_id UUID REFERENCES templates(id),
   groom_name VARCHAR(255),
   bride_name VARCHAR(255),
+  groom_description TEXT,
+  bride_description TEXT,
   event_date TIMESTAMP WITH TIME ZONE,
   venue TEXT,
   description TEXT,

@@ -1,7 +1,7 @@
 <template>
   <div class="container py-4">
     <div class="row justify-content-center">
-      <div class="col-lg-8">
+      <div class="col-lg-12">
         <div class="card">
           <div class="card-header">
             <h5 class="mb-0">Crear Nueva Invitación</h5>
@@ -41,6 +41,20 @@
                   <div class="mb-3">
                     <label class="form-label">Nombre de la Novia</label>
                     <input v-model="form.bride_name" type="text" class="form-control" placeholder="Nombre de la novia">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label class="form-label">Descripción del Novio</label>
+                    <textarea v-model="form.groom_description" class="form-control" rows="3" placeholder="Descripción del novio"></textarea>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label class="form-label">Descripción de la Novia</label>
+                    <textarea v-model="form.bride_description" class="form-control" rows="3" placeholder="Descripción de la novia"></textarea>
                   </div>
                 </div>
               </div>
@@ -95,6 +109,8 @@ const form = ref({
   template_id: '',
   groom_name: '',
   bride_name: '',
+  groom_description: '',
+  bride_description: '',
   event_date: '',
   venue: '',
   description: '',
@@ -125,7 +141,7 @@ const onFileChange = async (e: Event) => {
       .getPublicUrl(fileName)
     form.value.photo_url = publicUrlData.publicUrl
   } catch (error) {
-    alert('Error subiendo la imagen: ' + error.message)
+    alert('Error subiendo la imagen: ' + error)
   } finally {
     loading.value = false
   }
@@ -139,7 +155,7 @@ const handleSubmit = async () => {
       router.push('/invitations')
     }
   } catch (error) {
-    alert('Error creando invitación: ' + error.message)
+    alert('Error creando invitación: ' + error)
   } finally {
     loading.value = false
   }

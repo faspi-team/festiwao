@@ -45,8 +45,7 @@
                     <div class="d-flex">
                         <div class="text-end my-auto pe-4">
                             <h3 class="text-primary mb-3">{{ invitation.bride_name }}</h3>
-                            <p class="text-dark mb-0" style="line-height: 30px;">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy
-                            </p>
+                            <p class="text-dark mb-0" style="line-height: 30px;">{{ invitation.bride_description }}</p>
                         </div>
                         <img src="/assets/layouts/classic/img/bride.jpg" class="img-fluid img-border" alt="">
                     </div>
@@ -61,8 +60,7 @@
                         <img src="/assets/layouts/classic/img/Groom.jpg" class="img-fluid img-border" alt="">
                         <div class="my-auto ps-4">
                             <h3 class="text-primary mb-3">{{ invitation.groom_name }}</h3>
-                            <p class="text-dark mb-0" style="line-height: 30px;">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy
-                            </p>
+                            <p class="text-dark mb-0" style="line-height: 30px;">{{ invitation.groom_description }}</p>
                         </div>
                     </div>
                 </div>
@@ -89,7 +87,7 @@
               <div class="row wow fadeInUp" data-wow-delay="0.2s">
                   <div class="col-md-6 text-end border-0 border-top border-end border-secondary p-4">
                       <div class="d-inline-flex align-items-center h-100">
-                          <img src="/assets/layouts/classic/img/story-1.jpg" class="img-fluid w-100 img-border" alt="">
+                          <img src="/assets/layouts/classic/img/story-4.jpg" class="img-fluid w-100 img-border" alt="">
                       </div>
                   </div>
                   <div class="col-md-6 border-start border-top border-secondary p-4 pe-0">
@@ -110,14 +108,14 @@
                   </div>
                   <div class="col-md-6 border-start border-top border-secondary p-4">
                       <div class="d-inline-flex align-items-center h-100">
-                          <img src="/assets/layouts/classic/img/story-2.jpg" class="img-fluid w-100 img-border" alt="">
+                          <img src="/assets/layouts/classic/img/story-4.jpg" class="img-fluid w-100 img-border" alt="">
                       </div>
                   </div>
               </div>
               <div class="row wow fadeInUp" data-wow-delay="0.4s">
                   <div class="col-md-6 text-end border-end border-top border-secondary p-4 ps-0">
                       <div class="d-inline-flex align-items-center h-100">
-                          <img src="/assets/layouts/classic/img/story-3.jpg" class="img-fluid w-100 img-border" alt="">
+                          <img src="/assets/layouts/classic/img/story-4.jpg" class="img-fluid w-100 img-border" alt="">
                       </div>
                   </div>
                   <div class="col-md-6 border-start border-top border-secondary p-4 pe-0">
@@ -164,22 +162,22 @@
                   <h1 class="display-4">Nos casamos</h1>
                   <p class="text-dark fs-5">{{ invitation.venue }}</p>
                   <div class="d-flex align-items-center justify-content-center mb-5">
-                      <div class="text-dark fs-2 me-4">
-                          <div>00</div>
-                          <span>Days</span>
-                      </div>
-                      <div class="text-dark fs-2 me-4">
-                          <div>00</div>
-                          <span>Hours</span>
-                      </div>
-                      <div class="text-dark fs-2 me-4">
-                          <div>00</div>
-                          <span>Mins</span>
-                      </div>
-                      <div class="text-dark fs-2 me-0">
-                          <div>00</div>
-                          <span>Secs</span>
-                      </div>
+                    <div class="text-dark fs-2 me-4">
+                      <div>{{ countdown.days }}</div>
+                      <span>Días</span>
+                    </div>
+                    <div class="text-dark fs-2 me-4">
+                      <div>{{ countdown.hours }}</div>
+                      <span>Horas</span>
+                    </div>
+                    <div class="text-dark fs-2 me-4">
+                      <div>{{ countdown.minutes }}</div>
+                      <span>Mins</span>
+                    </div>
+                    <div class="text-dark fs-2 me-0">
+                      <div>{{ countdown.seconds }}</div>
+                      <span>Secs</span>
+                    </div>
                   </div>
               </div>
               <div class="position-absolute" style="top: 15%; right: -30px; transform: rotate(320deg); opacity: 0.5; z-index: 1;">
@@ -264,6 +262,8 @@
 
 <script setup lang="ts">
 
+import { ref, onMounted, onUnmounted } from 'vue'
+
 const route = useRoute()
 const { getInvitationByUrl, formatDate } = useInvitations()
 
@@ -273,6 +273,48 @@ definePageMeta({
 
 const invitation = ref<any>(null)
 const loading = ref(true)
+
+const countdown = ref({
+  days: '00',
+  hours: '00',
+  minutes: '00',
+  seconds: '00'
+})
+
+function updateCountdown() {
+  if (!invitation.value?.event_date) return
+  const eventDate = new Date(invitation.value.event_date)
+  const now = new Date()
+  const diff = eventDate.getTime() - now.getTime()
+
+  if (diff <= 0) {
+    countdown.value = { days: '00', hours: '00', minutes: '00', seconds: '00' }
+    return
+  }
+
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24))
+  const hours = Math.floor((diff / (1000 * 60 * 60)) % 24)
+  const minutes = Math.floor((diff / (1000 * 60)) % 60)
+  const seconds = Math.floor((diff / 1000) % 60)
+
+  countdown.value = {
+    days: String(days).padStart(2, '0'),
+    hours: String(hours).padStart(2, '0'),
+    minutes: String(minutes).padStart(2, '0'),
+    seconds: String(seconds).padStart(2, '0')
+  }
+}
+
+let interval: any
+
+onMounted(() => {
+  updateCountdown()
+  interval = setInterval(updateCountdown, 1000)
+})
+
+onUnmounted(() => {
+  clearInterval(interval)
+})
 
 onMounted(async () => {
   await loadInvitation()

@@ -11,7 +11,9 @@ export interface Invitation {
   user_id: string
   template_id?: string
   groom_name?: string
+  groom_description?: string
   bride_name?: string
+  bride_description?: string
   event_date?: string
   venue?: string
   description?: string
@@ -35,7 +37,9 @@ export interface RSVPResponse {
 export interface CreateInvitationData {
   template_id?: string
   groom_name?: string
+  groom_description?: string
   bride_name?: string
+  bride_description?: string
   event_date?: string
   venue?: string
   description?: string
