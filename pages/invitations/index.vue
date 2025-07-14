@@ -30,30 +30,35 @@
             <div v-for="invitation in invitations" :key="invitation.id" class="col-md-6 col-lg-4 mb-4">
               <div class="card invitation-card">
                 <div class="card-body">
-                                     <div class="d-flex justify-content-between align-items-start mb-3">
-                     <h6 class="card-title mb-0">Invitación</h6>
+                  <div class="d-flex justify-content-between align-items-start mb-3">
+                    <h6 class="card-title mb-0">Invitación</h6>
                     <div class="dropdown">
-                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
-                            <i class="ti ti-dots"></i>
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a class="dropdown-item" href="#" @click="viewInvitation(invitation)">
-                                    <i class="ti ti-eye"></i> Ver
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="#" @click="copyUrl(invitation)">
-                                    <i class="ti ti-copy"></i> Copiar URL
-                                </a>
-                            </li>
-                            <li v-if="invitation.user_id === user?.id"><hr class="dropdown-divider"></li>
-                            <li v-if="invitation.user_id === user?.id">
-                                <a class="dropdown-item text-danger" href="#" @click="deleteInvitation(invitation.id)">
-                                    <i class="ti ti-trash"></i> Eliminar
-                                </a>
-                            </li>
-                       </ul>
+                      <button class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                          <i class="ti ti-dots"></i>
+                      </button>
+                      <ul class="dropdown-menu">
+                        <li>
+                          <a class="dropdown-item" href="#" @click="viewInvitation(invitation)">
+                            <i class="ti ti-eye"></i> Ver
+                          </a>
+                        </li>
+                        <li>
+                          <a class="dropdown-item" href="#" @click="copyUrl(invitation)">
+                            <i class="ti ti-copy"></i> Copiar URL
+                          </a>
+                        </li>
+                        <li v-if="invitation.user_id === user?.id">
+                          <NuxtLink :to="`/invitations/create?edit=${invitation.id}`" class="dropdown-item" @click="console.log('Editing invitation:', invitation.id)">
+                            <i class="ti ti-edit"></i> Editar
+                          </NuxtLink>
+                        </li>
+                        <li v-if="invitation.user_id === user?.id"><hr class="dropdown-divider"></li>
+                        <li v-if="invitation.user_id === user?.id">
+                          <a class="dropdown-item text-danger" href="#" @click="deleteInvitation(invitation.id)">
+                            <i class="ti ti-trash"></i> Eliminar
+                          </a>
+                        </li>
+                      </ul>
                     </div>
                   </div>
                   
@@ -73,13 +78,13 @@
                     </div>
                   </div>
                   
-                                     <div class="invitation-stats">
-                     <small class="text-muted">
-                       <i class="ti ti-calendar"></i> {{ formatDate(invitation.created_at) }}
-                     </small>
-                     <small v-if="invitation.user_id !== user?.id" class="text-muted d-block">
-                       <i class="ti ti-user"></i> Creada por otro usuario
-                     </small>
+                  <div class="invitation-stats">
+                    <small class="text-muted">
+                      <i class="ti ti-calendar"></i> {{ formatDate(invitation.created_at) }}
+                    </small>
+                    <small v-if="invitation.user_id !== user?.id" class="text-muted d-block">
+                      <i class="ti ti-user"></i> Creada por otro usuario
+                    </small>
                    </div>
                 </div>
               </div>

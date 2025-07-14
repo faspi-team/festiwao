@@ -4,7 +4,7 @@
       <div class="col-lg-12">
         <div class="card">
           <div class="card-header">
-            <h5 class="mb-0">Crear Nueva Invitación</h5>
+            <h5 class="mb-0">{{ isEditMode ? 'Editar Invitación' : 'Crear Nueva Invitación' }}</h5>
           </div>
           <div class="card-body">
             <form @submit.prevent="handleSubmit">
@@ -80,7 +80,7 @@
                 <NuxtLink to="/invitations" class="btn btn-secondary me-2">Cancelar</NuxtLink>
                 <button type="submit" class="btn btn-primary" :disabled="loading">
                   <span v-if="loading" class="spinner-border spinner-border-sm me-2"></span>
-                  Crear Invitación
+                  {{ isEditMode ? 'Actualizar Invitación' : 'Crear Invitación' }}
                 </button>
               </div>
             </form>
@@ -92,8 +92,8 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter, useNuxtApp } from '#imports'
-import { ref, onMounted } from 'vue'
+import { useRouter, useNuxtApp, useRoute } from '#imports'
+import { ref, onMounted, computed } from 'vue'
 import { useInvitations } from '~/composables/useInvitations'
 
 definePageMeta({
@@ -102,8 +102,13 @@ definePageMeta({
 })
 
 const router = useRouter()
+const route = useRoute()
 const { $supabase } = useNuxtApp()
-const { templates, loadTemplates, createInvitation } = useInvitations()
+const { user } = useAuth()
+const { templates, loadTemplates, createInvitation, updateInvitation } = useInvitations()
+
+const isEditMode = computed(() => !!route.query.edit)
+const invitationId = computed(() => route.query.edit as string)
 
 const form = ref({
   template_id: '',
@@ -121,6 +126,48 @@ const loading = ref(false)
 
 onMounted(async () => {
   await loadTemplates()
+  
+  if (isEditMode.value && invitationId.value) {
+    try {
+      const { data: allData, error: checkError } = await $supabase
+        .from('invitations')
+        .select('*')
+        .eq('id', invitationId.value)
+      
+      if (checkError) {
+        console.error('Error in query:', checkError)
+        throw checkError
+      }
+      
+      if (!allData || allData.length === 0) {
+        console.error('No invitation found with ID:', invitationId.value)
+        alert('Invitación no encontrada')
+        router.push('/invitations')
+        return
+      }
+      
+      const data = allData[0]
+      console.log('Loaded invitation data:', data)
+      
+      form.value = {
+        template_id: data.template_id || '',
+        groom_name: data.groom_name || '',
+        bride_name: data.bride_name || '',
+        groom_description: data.groom_description || '',
+        bride_description: data.bride_description || '',
+        event_date: data.event_date ? new Date(data.event_date).toISOString().slice(0, 16) : '',
+        venue: data.venue || '',
+        description: data.description || '',
+        photo_url: data.photo_url || ''
+      }
+      
+      console.log('Form preloaded with:', form.value)
+    } catch (error) {
+      console.error('Error loading invitation:', error)
+      alert('Error cargando la invitación: ' + (error instanceof Error ? error.message : 'Error desconocido'))
+      router.push('/invitations')
+    }
+  }
 })
 
 const onFileChange = async (e: Event) => {
@@ -150,12 +197,32 @@ const onFileChange = async (e: Event) => {
 const handleSubmit = async () => {
   loading.value = true
   try {
-    const result = await createInvitation(form.value)
-    if (result) {
-      router.push('/invitations')
+    let result
+    
+    if (isEditMode.value && invitationId.value) {
+      const formData = {
+        ...form.value,
+        event_date: form.value.event_date ? new Date(form.value.event_date).toISOString() : undefined
+      }
+      
+      result = await updateInvitation(invitationId.value, formData)
+      
+      if (result) {
+        alert('Invitación actualizada exitosamente')
+        router.push('/invitations')
+      } else {
+        throw new Error('Error actualizando la invitación')
+      }
+    } else {
+      result = await createInvitation(form.value)
+      if (result) {
+        router.push('/invitations')
+      }
     }
   } catch (error) {
-    alert('Error creando invitación: ' + error)
+    const errorMessage = error instanceof Error ? error.message : 'Error desconocido'
+    const action = isEditMode.value ? 'actualizando' : 'creando'
+    alert(`Error ${action} invitación: ${errorMessage}`)
   } finally {
     loading.value = false
   }

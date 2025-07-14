@@ -93,6 +93,24 @@ export const useInvitations = () => {
     }
   }
 
+  const updateInvitation = async (id: string, invitationData: Partial<CreateInvitationData>): Promise<Invitation | null> => {
+    if (!user.value) return null
+    
+    try {
+      const { data, error } = await $supabase
+        .from('invitations')
+        .update(invitationData)
+        .eq('id', id)
+        .select()
+      
+      console.log('Update result:', { data, error })
+      return data?.[0] || null
+    } catch (error) {
+      console.error('Error:', error)
+      throw error
+    }
+  }
+
   const deleteInvitation = async (id: string): Promise<boolean> => {
     try {
       const { error } = await $supabase
@@ -143,6 +161,7 @@ export const useInvitations = () => {
     loadInvitations,
     loadTemplates,
     createInvitation,
+    updateInvitation,
     getInvitationByUrl,
     deleteInvitation,
     formatDate,
