@@ -71,7 +71,7 @@
   </div>
 
   <!-- Story Start -->
-  <div class="container-fluid story position-relative py-5" id="weddingStory">
+  <div v-if="storyEvents && storyEvents.length > 0" class="container-fluid story position-relative py-5" id="weddingStory">
       <div class="position-absolute" style="top: -35px; right: 0;">
           <img src="/assets/layouts/classic/img/tamp-bg-1.png" class="img-fluid" alt="">
       </div>
@@ -84,62 +84,50 @@
               <h1 class="display-4">Nuestra historia de amor</h1>
           </div>
           <div class="story-timeline">
-              <div class="row wow fadeInUp" data-wow-delay="0.2s">
-                  <div class="col-md-6 text-end border-0 border-top border-end border-secondary p-4">
-                      <div class="d-inline-flex align-items-center h-100">
-                          <img src="/assets/layouts/classic/img/story-4.jpg" class="img-fluid w-100 img-border" alt="">
-                      </div>
-                  </div>
-                  <div class="col-md-6 border-start border-top border-secondary p-4 pe-0">
-                      <div class="h-100 d-flex flex-column justify-content-center bg-secondary p-4">
-                          <h4 class="mb-2 text-dark">First Meet</h4>
-                          <p class="text-uppercase text-primary mb-2" style="letter-spacing: 3px;">01 Jan 2050</p>
-                          <p class="m-0 fs-5">Lorem elitr magna stet rebum dolores sed. Est stet labore est lorem lorem at amet sea, eos tempor rebum, labore amet ipsum sea lorem, stet rebum eirmod amet. Kasd clita kasd stet amet est dolor elitr.</p>
-                      </div>
-                  </div>
+            <div 
+              v-for="(event, index) in storyEvents" 
+              :key="event.id"
+              class="row wow fadeInUp" 
+              :class="{ 'flex-column-reverse flex-md-row': index % 2 === 1 }"
+              :data-wow-delay="`${0.4 + index * 0.1}s`"
+            >
+              <div 
+                v-if="index % 2 === 0"
+                class="col-md-6 text-end border-0 border-top border-end border-secondary p-4"
+              >
+                <div class="d-inline-flex align-items-center h-100">
+                  <img 
+                    :src="event.image || '/assets/layouts/classic/img/story-4.jpg'" 
+                    class="img-fluid w-100 img-border" 
+                    :alt="event.title"
+                  >
+                </div>
+              </div>              
+              <div 
+                class="col-md-6 border-top border-secondary p-4"
+                :class="index % 2 === 0 ? 'border-start pe-0' : 'text-end border-end ps-0'"
+              >
+                <div class="h-100 d-flex flex-column justify-content-center bg-secondary p-4">
+                  <h4 class="mb-2 text-dark">{{ event.title }}</h4>
+                  <p class="text-uppercase text-primary mb-2" style="letter-spacing: 3px;">
+                    {{ formatStoryDate(event.date) }}
+                  </p>
+                  <p class="m-0 fs-5">{{ event.description }}</p>
+                </div>
+              </div>              
+              <div 
+                v-if="index % 2 === 1"
+                class="col-md-6 border-start border-top border-secondary p-4"
+              >
+                <div class="d-inline-flex align-items-center h-100">
+                  <img 
+                    :src="event.image || '/assets/layouts/classic/img/story-4.jpg'" 
+                    class="img-fluid w-100 img-border" 
+                    :alt="event.title"
+                  >
+                </div>
               </div>
-              <div class="row flex-column-reverse flex-md-row wow fadeInUp" data-wow-delay="0.3s">
-                  <div class="col-md-6 text-end border-end border-top border-secondary p-4 ps-0">
-                      <div class="h-100 d-flex flex-column justify-content-center bg-secondary p-4">
-                          <h4 class="text-dark mb-2">First Date</h4>
-                          <p class="text-uppercase text-primary mb-2" style="letter-spacing: 3px;">01 Jan 2050</p>
-                          <p class="m-0 fs-5">Lorem elitr magna stet rebum dolores sed. Est stet labore est lorem lorem at amet sea, eos tempor rebum, labore amet ipsum sea lorem, stet rebum eirmod amet. Kasd clita kasd stet amet est dolor elitr.</p>
-                      </div>
-                  </div>
-                  <div class="col-md-6 border-start border-top border-secondary p-4">
-                      <div class="d-inline-flex align-items-center h-100">
-                          <img src="/assets/layouts/classic/img/story-4.jpg" class="img-fluid w-100 img-border" alt="">
-                      </div>
-                  </div>
-              </div>
-              <div class="row wow fadeInUp" data-wow-delay="0.4s">
-                  <div class="col-md-6 text-end border-end border-top border-secondary p-4 ps-0">
-                      <div class="d-inline-flex align-items-center h-100">
-                          <img src="/assets/layouts/classic/img/story-4.jpg" class="img-fluid w-100 img-border" alt="">
-                      </div>
-                  </div>
-                  <div class="col-md-6 border-start border-top border-secondary p-4 pe-0">
-                      <div class="h-100 d-flex flex-column justify-content-center bg-secondary p-4">
-                          <h4 class="text-dark mb-2">Proposal</h4>
-                          <p class="text-uppercase text-primary mb-2" style="letter-spacing: 3px;">01 Jan 2050</p>
-                          <p class="m-0 fs-5">Lorem elitr magna stet rebum dolores sed. Est stet labore est lorem lorem at amet sea, eos tempor rebum, labore amet ipsum sea lorem, stet rebum eirmod amet. Kasd clita kasd stet amet est dolor elitr.</p>
-                      </div>
-                  </div>
-              </div>
-              <div class="row flex-column-reverse flex-md-row wow fadeInUp" data-wow-delay="0.5s">
-                  <div class="col-md-6 text-end border border-start-0 border-secondary p-4 ps-0">
-                      <div class="h-100 d-flex flex-column justify-content-center bg-secondary p-4">
-                          <h4 class="text-dark mb-2">Enagagement</h4>
-                          <p class="text-uppercase text-primary mb-2" style="letter-spacing: 3px;">01 Jan 2050</p>
-                          <p class="m-0 fs-5">Lorem elitr magna stet rebum dolores sed. Est stet labore est lorem lorem at amet sea, eos tempor rebum, labore amet ipsum sea lorem, stet rebum eirmod amet. Kasd clita kasd stet amet est dolor elitr.</p>
-                      </div>
-                  </div>
-                  <div class="col-md-6 border border-end-0 border-secondary p-4">
-                      <div class="d-inline-flex align-items-center h-100">
-                          <img src="/assets/layouts/classic/img/story-4.jpg" class="img-fluid w-100 img-border" alt="">
-                      </div>
-                  </div>
-              </div>
+            </div>
           </div>
       </div>
   </div>
@@ -157,7 +145,7 @@
           <div class="wedding-date text-center bg-light p-5" style="border-style: double !important; border: 15px solid rgba(253, 93, 93, 0.5);">
               <div class="wedding-date-content">
                   <div class="d-inline-block border-end-0 border-start-0 border-secondary p-2 mb-4" style="border-style: double;">
-                      <h4 class="text-dark text-uppercase fw-bold mb-0" style="letter-spacing: 3px;">June 28, 2024</h4>
+                      <h4 class="text-dark text-uppercase fw-bold mb-0" style="letter-spacing: 3px;">{{ formatDate(invitation.event_date) }}</h4>
                   </div>
                   <h1 class="display-4">Nos casamos</h1>
                   <p class="text-dark fs-5">{{ invitation.venue }}</p>
@@ -274,12 +262,34 @@ definePageMeta({
 const invitation = ref<any>(null)
 const loading = ref(true)
 
+const storyEvents = computed(() => {
+  if (!invitation.value?.story) return []
+  try {
+    return typeof invitation.value.story === 'string' 
+      ? JSON.parse(invitation.value.story) 
+      : invitation.value.story
+  } catch (error) {
+    console.error('Error parsing story:', error)
+    return []
+  }
+})
+
 const countdown = ref({
   days: '00',
   hours: '00',
   minutes: '00',
   seconds: '00'
 })
+
+const formatStoryDate = (dateString: string): string => {
+  if (!dateString) return ''
+  const date = new Date(dateString)
+  return date.toLocaleDateString('es-ES', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric'
+  }).toUpperCase()
+}
 
 function updateCountdown() {
   if (!invitation.value?.event_date) return

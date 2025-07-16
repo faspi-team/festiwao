@@ -76,6 +76,63 @@
                 <label class="form-label">Descripción</label>
                 <textarea v-model="form.description" class="form-control" rows="3" placeholder="Detalles adicionales del evento"></textarea>
               </div>
+              
+              <!-- Historia de Amor -->
+              <div class="mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <h6 class="mb-0">Historia de Amor</h6>
+                  <button type="button" class="btn btn-sm btn-outline-primary" @click="addStoryEvent">
+                    <i class="ti ti-plus"></i> Agregar Evento
+                  </button>
+                </div>
+                
+                <div v-if="form.story && form.story.length > 0" class="story-events">
+                  <div v-for="(event, index) in form.story" :key="event.id" class="card mb-3">
+                    <div class="card-body">
+                      <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h6 class="card-title mb-0">Evento {{ index + 1 }}</h6>
+                        <button type="button" class="btn btn-sm btn-outline-danger" @click="removeStoryEvent(index)">
+                          <i class="ti ti-trash"></i>
+                        </button>
+                      </div>
+                      
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div class="mb-3">
+                            <label class="form-label">Título</label>
+                            <input v-model="event.title" type="text" class="form-control" placeholder="Ej: Primer encuentro">
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="mb-3">
+                            <label class="form-label">Fecha</label>
+                            <input v-model="event.date" type="date" class="form-control">
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div class="mb-3">
+                        <label class="form-label">Descripción</label>
+                        <textarea v-model="event.description" class="form-control" rows="3" placeholder="Cuenta la historia de este momento especial..."></textarea>
+                      </div>
+                      
+                      <div class="mb-3">
+                        <label class="form-label">Imagen (opcional)</label>
+                        <input @change="handleStoryImageUpload($event, index)" type="file" class="form-control" accept="image/*">
+                        <div v-if="event.image" class="mt-2">
+                          <img :src="event.image" alt="Imagen del evento" class="img-thumbnail" style="max-height: 100px;">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div v-else class="text-center py-4 text-muted">
+                  <i class="ti ti-heart" style="font-size: 2rem;"></i>
+                  <p class="mb-0">No hay eventos en la historia. ¡Agrega el primer momento especial!</p>
+                </div>
+              </div>
+              
               <div class="d-flex justify-content-end">
                 <NuxtLink to="/invitations" class="btn btn-secondary me-2">Cancelar</NuxtLink>
                 <button type="submit" class="btn btn-primary" :disabled="loading">
@@ -119,7 +176,8 @@ const form = ref({
   event_date: '',
   venue: '',
   description: '',
-  photo_url: ''
+  photo_url: '',
+  story: [] as { id: string; title: string; date: string; description: string; image: string }[]
 })
 
 const loading = ref(false)
@@ -158,7 +216,8 @@ onMounted(async () => {
         event_date: data.event_date ? new Date(data.event_date).toISOString().slice(0, 16) : '',
         venue: data.venue || '',
         description: data.description || '',
-        photo_url: data.photo_url || ''
+        photo_url: data.photo_url || '',
+        story: data.story ? JSON.parse(data.story) : []
       }
       
       console.log('Form preloaded with:', form.value)
@@ -194,6 +253,44 @@ const onFileChange = async (e: Event) => {
   }
 }
 
+const addStoryEvent = () => {
+  form.value.story.push({
+    id: Date.now().toString(),
+    title: '',
+    date: '',
+    description: '',
+    image: ''
+  })
+}
+
+const removeStoryEvent = (index: number) => {
+  form.value.story.splice(index, 1)
+}
+
+const handleStoryImageUpload = async (e: Event, index: number) => {
+  const target = e.target as HTMLInputElement
+  if (!target.files || !target.files[0]) return
+  const file = target.files[0]
+  loading.value = true
+  try {
+    const fileExt = file.name.split('.').pop()
+    const fileName = `story-event-${Date.now()}-${index}.${fileExt}`
+    const { data, error } = await $supabase.storage
+      .from('invitations')
+      .upload(fileName, file, { upsert: true })
+    if (error) throw error
+    
+    const { data: publicUrlData } = $supabase.storage
+      .from('invitations')
+      .getPublicUrl(fileName)
+    form.value.story[index].image = publicUrlData.publicUrl
+  } catch (error) {
+    alert('Error subiendo la imagen: ' + error)
+  } finally {
+    loading.value = false
+  }
+}
+
 const handleSubmit = async () => {
   loading.value = true
   try {
@@ -202,7 +299,8 @@ const handleSubmit = async () => {
     if (isEditMode.value && invitationId.value) {
       const formData = {
         ...form.value,
-        event_date: form.value.event_date ? new Date(form.value.event_date).toISOString() : undefined
+        event_date: form.value.event_date ? new Date(form.value.event_date).toISOString() : undefined,
+        story: JSON.stringify(form.value.story)
       }
       
       result = await updateInvitation(invitationId.value, formData)
@@ -214,7 +312,12 @@ const handleSubmit = async () => {
         throw new Error('Error actualizando la invitación')
       }
     } else {
-      result = await createInvitation(form.value)
+      const formData = {
+        ...form.value,
+        event_date: form.value.event_date ? new Date(form.value.event_date).toISOString() : undefined,
+        story: JSON.stringify(form.value.story)
+      }
+      result = await createInvitation(formData)
       if (result) {
         router.push('/invitations')
       }

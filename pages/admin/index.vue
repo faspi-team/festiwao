@@ -96,9 +96,6 @@
                   <td>
                     <div>
                       <strong>{{ invitation.groom_name || 'Novio' }} & {{ invitation.bride_name || 'Novia' }}</strong>
-                      <small v-if="invitation.user_id !== user?.id" class="text-muted d-block">
-                        <i class="ti ti-user"></i> Por otro usuario
-                      </small>
                     </div>
                   </td>
                   <td>{{ formatDate(invitation.event_date) }}</td>

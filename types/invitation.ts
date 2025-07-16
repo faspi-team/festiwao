@@ -6,6 +6,14 @@ export interface Template {
   updated_at: string
 }
 
+export interface StoryEvent {
+  id: string
+  title: string
+  date: string
+  description: string
+  image?: string
+}
+
 export interface Invitation {
   id: string
   user_id: string
@@ -19,6 +27,7 @@ export interface Invitation {
   description?: string
   unique_url: string
   is_active: boolean
+  story?: StoryEvent[]
   created_at: string
   updated_at: string
   photo_url?: string
@@ -44,4 +53,5 @@ export interface CreateInvitationData {
   venue?: string
   description?: string
   photo_url?: string
+  story?: string // JSON string, not StoryEvent[]
 } 
