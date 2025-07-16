@@ -192,47 +192,28 @@
               <h1 class="display-4 text-white">Planificación de la boda</h1>
           </div>
           <div class="position-relative wedding-content">
-              <div class="row g-4">
-                  <div class="col-6 col-md-6 col-xl-3 border border-bottom-0">
-                      <div class="text-center p-3 wow fadeIn" data-wow-delay="0.1s">
+              <div v-if="weddingTimeline.length > 0" class="row g-4 justify-content-center">
+                  <div 
+                    v-for="(event, index) in weddingTimeline" 
+                    :key="event.id"
+                    class="col-6 col-md-4 col-lg-3"
+                  >
+                      <div class="border rounded p-3 h-100 text-center wow fadeIn" :data-wow-delay="`${0.1 + index * 0.2}s`">
                           <div class="mb-4 p-3 d-inline-flex">
-                              <i class="fas fa-menorah text-primary fa-3x"></i>
+                              <i :class="`${event.icon || 'fas fa-calendar'} text-primary fa-3x`"></i>
                           </div>
-                          <p class="text-primary">10:00AM - 11:00AM</p>
-                          <h3 class="text-dark">Dinner</h3>
-                          <p class="text-dark">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy</p>
+                          <p class="text-primary">{{ event.time }}</p>
+                          <h3 class="text-dark">{{ event.title }}</h3>
+                          <p class="text-dark">{{ event.description }}</p>
                       </div>
                   </div>
-                  <div class="col-6 col-md-6 col-xl-3 border border-top-0 border-start-0">
-                      <div class="text-center p-3 wow fadeIn" data-wow-delay="0.3s">
-                          <div class="mb-4 p-3 d-inline-flex">
-                              <i class="fas fa-photo-video text-primary fa-3x"></i>
-                          </div>
-                          <p class="text-primary">10:00AM - 11:00AM</p>
-                          <h3 class="text-dark">Photoshoot</h3>
-                          <p class="text-dark">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy</p>
-                      </div>
+              </div>
+              <div v-else class="text-center py-5">
+                  <div class="mb-4">
+                      <i class="fas fa-calendar text-primary fa-4x"></i>
                   </div>
-                  <div class="col-6 col-md-6 col-xl-3 border border-bottom-0 border-end-0">
-                      <div class="text-center p-3 wow fadeIn" data-wow-delay="0.5s">
-                          <div class="mb-4 p-3 d-inline-flex">
-                              <i class="fas fa-dungeon text-primary fa-3x"></i>
-                          </div>
-                          <p class="text-primary">10:00AM - 11:00AM</p>
-                          <h3 class="text-dark">Reception</h3>
-                          <p class="text-dark">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy</p>
-                      </div>
-                  </div>
-                  <div class="col-6 col-md-6 col-xl-3 border border-top-0">
-                      <div class="text-center p-3 wow fadeIn" data-wow-delay="0.7s">
-                          <div class="mb-4 p-3 d-inline-flex">
-                              <i class="fas fa-ring text-primary fa-3x"></i>
-                          </div>
-                          <p class="text-primary">10:00AM - 11:00AM</p>
-                          <h3 class="text-dark">Ceremony</h3>
-                          <p class="text-dark">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy</p>
-                      </div>
-                  </div>
+                  <h3 class="text-white">Planificación de la boda próximamente</h3>
+                  <p class="text-white-50">Los detalles del cronograma se publicarán pronto</p>
               </div>
               <div class="position-absolute heart-circle " style="bottom: 0; left: -18px;">
                   <div class="border border-2 border-primary rounded-circle p-1 bg-secondary"></div>
@@ -274,6 +255,18 @@ const storyEvents = computed(() => {
   }
 })
 
+const weddingTimeline = computed(() => {
+  if (!invitation.value?.wedding_timeline) return []
+  try {
+    return typeof invitation.value.wedding_timeline === 'string' 
+      ? JSON.parse(invitation.value.wedding_timeline) 
+      : invitation.value.wedding_timeline
+  } catch (error) {
+    console.error('Error parsing wedding timeline:', error)
+    return []
+  }
+})
+
 const countdown = ref({
   days: '00',
   hours: '00',
@@ -290,6 +283,8 @@ const formatStoryDate = (dateString: string): string => {
     year: 'numeric'
   }).toUpperCase()
 }
+
+
 
 function updateCountdown() {
   if (!invitation.value?.event_date) return

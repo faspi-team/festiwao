@@ -133,6 +133,72 @@
                 </div>
               </div>
               
+              <!-- Timeline de la Boda -->
+              <div class="mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <h6 class="mb-0">Planificación de la Boda</h6>
+                  <button type="button" class="btn btn-sm btn-outline-primary" @click="addTimelineEvent">
+                    <i class="ti ti-plus"></i> Agregar Evento
+                  </button>
+                </div>
+                
+                <div v-if="form.wedding_timeline && form.wedding_timeline.length > 0" class="timeline-events">
+                  <div v-for="(event, index) in form.wedding_timeline" :key="event.id" class="card mb-3">
+                    <div class="card-body">
+                      <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h6 class="card-title mb-0">Evento {{ index + 1 }}</h6>
+                        <button type="button" class="btn btn-sm btn-outline-danger" @click="removeTimelineEvent(index)">
+                          <i class="ti ti-trash"></i>
+                        </button>
+                      </div>
+                      
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div class="mb-3">
+                            <label class="form-label">Título</label>
+                            <input v-model="event.title" type="text" class="form-control" placeholder="Ej: Ceremonia">
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="mb-3">
+                            <label class="form-label">Horario</label>
+                            <input v-model="event.time" type="text" class="form-control" placeholder="Ej: 10:00AM - 11:00AM">
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div class="mb-3">
+                        <label class="form-label">Descripción</label>
+                        <textarea v-model="event.description" class="form-control" rows="2" placeholder="Descripción del evento..."></textarea>
+                      </div>
+                      
+                      <div class="mb-3">
+                        <label class="form-label">Icono</label>
+                        <div class="row">
+                          <div v-for="iconOption in predefinedIcons" :key="iconOption.id" class="col-2 col-md-1 mb-2">
+                            <button 
+                              type="button" 
+                              class="btn btn-outline-secondary w-100 p-2"
+                              :class="{ 'active': event.icon === iconOption.icon }"
+                              @click="event.icon = iconOption.icon"
+                              :title="iconOption.label"
+                            >
+                              <i :class="iconOption.icon"></i>
+                            </button>
+                          </div>
+                        </div>
+                        <small class="text-muted">Selecciona un icono para el evento</small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div v-else class="text-center py-4 text-muted">
+                  <i class="ti ti-calendar" style="font-size: 2rem;"></i>
+                  <p class="mb-0">No hay eventos en el timeline. ¡Agrega el primer evento!</p>
+                </div>
+              </div>
+              
               <div class="d-flex justify-content-end">
                 <NuxtLink to="/invitations" class="btn btn-secondary me-2">Cancelar</NuxtLink>
                 <button type="submit" class="btn btn-primary" :disabled="loading">
@@ -152,6 +218,7 @@
 import { useRouter, useNuxtApp, useRoute } from '#imports'
 import { ref, onMounted, computed } from 'vue'
 import { useInvitations } from '~/composables/useInvitations'
+import { useWeddingIcons } from '~/composables/useWeddingIcons'
 
 definePageMeta({
   layout: 'admin',
@@ -163,6 +230,7 @@ const route = useRoute()
 const { $supabase } = useNuxtApp()
 const { user } = useAuth()
 const { templates, loadTemplates, createInvitation, updateInvitation } = useInvitations()
+const { predefinedIcons } = useWeddingIcons()
 
 const isEditMode = computed(() => !!route.query.edit)
 const invitationId = computed(() => route.query.edit as string)
@@ -177,10 +245,25 @@ const form = ref({
   venue: '',
   description: '',
   photo_url: '',
-  story: [] as { id: string; title: string; date: string; description: string; image: string }[]
+  story: [] as { id: string; title: string; date: string; description: string; image: string }[],
+  wedding_timeline: [] as { id: string; title: string; time: string; description: string; icon: string }[]
 })
 
 const loading = ref(false)
+
+const parseJsonField = (field: any, defaultValue: any) => {
+  if (!field) return defaultValue
+  if (typeof field === 'object') return field
+  if (typeof field === 'string') {
+    try {
+      return JSON.parse(field)
+    } catch (error) {
+      console.warn('Error parsing JSON field:', error)
+      return defaultValue
+    }
+  }
+  return defaultValue
+}
 
 onMounted(async () => {
   await loadTemplates()
@@ -217,7 +300,8 @@ onMounted(async () => {
         venue: data.venue || '',
         description: data.description || '',
         photo_url: data.photo_url || '',
-        story: data.story ? JSON.parse(data.story) : []
+        story: parseJsonField(data.story, []),
+        wedding_timeline: parseJsonField(data.wedding_timeline, [])
       }
       
       console.log('Form preloaded with:', form.value)
@@ -291,6 +375,20 @@ const handleStoryImageUpload = async (e: Event, index: number) => {
   }
 }
 
+const addTimelineEvent = () => {
+  form.value.wedding_timeline.push({
+    id: Date.now().toString(),
+    title: '',
+    time: '',
+    description: '',
+    icon: 'fas fa-calendar'
+  })
+}
+
+const removeTimelineEvent = (index: number) => {
+  form.value.wedding_timeline.splice(index, 1)
+}
+
 const handleSubmit = async () => {
   loading.value = true
   try {
@@ -300,7 +398,8 @@ const handleSubmit = async () => {
       const formData = {
         ...form.value,
         event_date: form.value.event_date ? new Date(form.value.event_date).toISOString() : undefined,
-        story: JSON.stringify(form.value.story)
+        story: JSON.stringify(form.value.story),
+        wedding_timeline: JSON.stringify(form.value.wedding_timeline)
       }
       
       result = await updateInvitation(invitationId.value, formData)
@@ -315,7 +414,8 @@ const handleSubmit = async () => {
       const formData = {
         ...form.value,
         event_date: form.value.event_date ? new Date(form.value.event_date).toISOString() : undefined,
-        story: JSON.stringify(form.value.story)
+        story: JSON.stringify(form.value.story),
+        wedding_timeline: JSON.stringify(form.value.wedding_timeline)
       }
       result = await createInvitation(formData)
       if (result) {

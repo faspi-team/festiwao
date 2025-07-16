@@ -23,6 +23,8 @@ CREATE TABLE invitations (
   unique_url VARCHAR(255) UNIQUE NOT NULL,
   is_active BOOLEAN DEFAULT true,
   photo_url VARCHAR(255),
+  story JSONB,
+  wedding_timeline JSONB,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );

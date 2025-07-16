@@ -14,6 +14,14 @@ export interface StoryEvent {
   image?: string
 }
 
+export interface WeddingTimelineEvent {
+  id: string
+  title: string
+  time: string
+  description: string
+  icon: string
+}
+
 export interface Invitation {
   id: string
   user_id: string
@@ -28,6 +36,7 @@ export interface Invitation {
   unique_url: string
   is_active: boolean
   story?: StoryEvent[]
+  wedding_timeline?: WeddingTimelineEvent[]
   created_at: string
   updated_at: string
   photo_url?: string
@@ -53,5 +62,6 @@ export interface CreateInvitationData {
   venue?: string
   description?: string
   photo_url?: string
-  story?: string // JSON string, not StoryEvent[]
+  story?: string
+  wedding_timeline?: string
 } 
