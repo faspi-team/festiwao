@@ -80,254 +80,290 @@
               <!-- Historia de Amor -->
               <div class="mb-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                  <h6 class="mb-0">Historia de Amor</h6>
+                  <h6 class="mb-0" data-bs-toggle="collapse" data-bs-target="#storyCollapse" role="button" aria-expanded="false" aria-controls="storyCollapse" style="cursor: pointer;">
+                    <i class="fas fa-heart text-primary me-2"></i>
+                    Historia de Amor
+                    <i class="fas fa-chevron-down ms-2 text-muted"></i>
+                  </h6>
                   <button type="button" class="btn btn-sm btn-outline-primary" @click="addStoryEvent">
                     <i class="ti ti-plus"></i> Agregar Evento
                   </button>
                 </div>
                 
-                <div v-if="form.story && form.story.length > 0" class="story-events">
-                  <div v-for="(event, index) in form.story" :key="event.id" class="card mb-3">
-                    <div class="card-body">
-                      <div class="d-flex justify-content-between align-items-start mb-2">
-                        <h6 class="card-title mb-0">Evento {{ index + 1 }}</h6>
-                        <button type="button" class="btn btn-sm btn-outline-danger" @click="removeStoryEvent(index)">
-                          <i class="ti ti-trash"></i>
-                        </button>
-                      </div>
-                      
-                      <div class="row">
-                        <div class="col-md-6">
-                          <div class="mb-3">
-                            <label class="form-label">Título</label>
-                            <input v-model="event.title" type="text" class="form-control" placeholder="Ej: Primer encuentro">
+                <div class="collapse" id="storyCollapse">
+                  <div v-if="form.story && form.story.length > 0" class="story-events">
+                    <div v-for="(event, index) in form.story" :key="event.id" class="card mb-3">
+                      <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                          <h6 class="card-title mb-0">Evento {{ index + 1 }}</h6>
+                          <button type="button" class="btn btn-sm btn-outline-danger" @click="removeStoryEvent(index)">
+                            <i class="ti ti-trash"></i>
+                          </button>
+                        </div>
+                        
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="mb-3">
+                              <label class="form-label">Título</label>
+                              <input v-model="event.title" type="text" class="form-control" placeholder="Ej: Primer encuentro">
+                            </div>
+                          </div>
+                          <div class="col-md-6">
+                            <div class="mb-3">
+                              <label class="form-label">Fecha</label>
+                              <input v-model="event.date" type="date" class="form-control">
+                            </div>
                           </div>
                         </div>
-                        <div class="col-md-6">
-                          <div class="mb-3">
-                            <label class="form-label">Fecha</label>
-                            <input v-model="event.date" type="date" class="form-control">
-                          </div>
+                        
+                        <div class="mb-3">
+                          <label class="form-label">Descripción</label>
+                          <textarea v-model="event.description" class="form-control" rows="3" placeholder="Cuenta la historia de este momento especial..."></textarea>
                         </div>
-                      </div>
-                      
-                      <div class="mb-3">
-                        <label class="form-label">Descripción</label>
-                        <textarea v-model="event.description" class="form-control" rows="3" placeholder="Cuenta la historia de este momento especial..."></textarea>
-                      </div>
-                      
-                      <div class="mb-3">
-                        <label class="form-label">Imagen (opcional)</label>
-                        <input @change="handleStoryImageUpload($event, index)" type="file" class="form-control" accept="image/*">
-                        <div v-if="event.image" class="mt-2">
-                          <img :src="event.image" alt="Imagen del evento" class="img-thumbnail" style="max-height: 100px;">
+                        
+                        <div class="mb-3">
+                          <label class="form-label">Imagen (opcional)</label>
+                          <input @change="handleStoryImageUpload($event, index)" type="file" class="form-control" accept="image/*">
+                          <div v-if="event.image" class="mt-2">
+                            <img :src="event.image" alt="Imagen del evento" class="img-thumbnail" style="max-height: 100px;">
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-                
-                <div v-else class="text-center py-4 text-muted">
-                  <i class="ti ti-heart" style="font-size: 2rem;"></i>
-                  <p class="mb-0">No hay eventos en la historia. ¡Agrega el primer momento especial!</p>
+                  
+                  <div v-else class="text-center py-4 text-muted">
+                    <i class="ti ti-heart" style="font-size: 2rem;"></i>
+                    <p class="mb-0">No hay eventos en la historia. ¡Agrega el primer momento especial!</p>
+                  </div>
                 </div>
               </div>
               
               <!-- Timeline de la Boda -->
               <div class="mb-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                  <h6 class="mb-0">Planificación de la Boda</h6>
+                  <h6 class="mb-0" data-bs-toggle="collapse" data-bs-target="#timelineCollapse" role="button" aria-expanded="false" aria-controls="timelineCollapse" style="cursor: pointer;">
+                    <i class="fas fa-calendar-alt text-primary me-2"></i>
+                    Planificación de la Boda
+                    <i class="fas fa-chevron-down ms-2 text-muted"></i>
+                  </h6>
                   <button type="button" class="btn btn-sm btn-outline-primary" @click="addTimelineEvent">
                     <i class="ti ti-plus"></i> Agregar Evento
                   </button>
                 </div>
                 
-                <div v-if="form.wedding_timeline && form.wedding_timeline.length > 0" class="timeline-events">
-                  <div v-for="(event, index) in form.wedding_timeline" :key="event.id" class="card mb-3">
-                    <div class="card-body">
-                      <div class="d-flex justify-content-between align-items-start mb-2">
-                        <h6 class="card-title mb-0">Evento {{ index + 1 }}</h6>
-                        <button type="button" class="btn btn-sm btn-outline-danger" @click="removeTimelineEvent(index)">
-                          <i class="ti ti-trash"></i>
-                        </button>
-                      </div>
-                      
-                      <div class="row">
-                        <div class="col-md-6">
-                          <div class="mb-3">
-                            <label class="form-label">Título</label>
-                            <input v-model="event.title" type="text" class="form-control" placeholder="Ej: Ceremonia">
-                          </div>
+                <div class="collapse" id="timelineCollapse">
+                  <div v-if="form.wedding_timeline && form.wedding_timeline.length > 0" class="timeline-events">
+                    <div v-for="(event, index) in form.wedding_timeline" :key="event.id" class="card mb-3">
+                      <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                          <h6 class="card-title mb-0">Evento {{ index + 1 }}</h6>
+                          <button type="button" class="btn btn-sm btn-outline-danger" @click="removeTimelineEvent(index)">
+                            <i class="ti ti-trash"></i>
+                          </button>
                         </div>
-                        <div class="col-md-6">
-                          <div class="mb-3">
-                            <label class="form-label">Horario</label>
-                            <input v-model="event.time" type="text" class="form-control" placeholder="Ej: 10:00AM - 11:00AM">
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div class="mb-3">
-                        <label class="form-label">Descripción</label>
-                        <textarea v-model="event.description" class="form-control" rows="2" placeholder="Descripción del evento..."></textarea>
-                      </div>
-                      
-                      <div class="mb-3">
-                        <label class="form-label">Icono</label>
+                        
                         <div class="row">
-                          <div v-for="iconOption in predefinedIcons" :key="iconOption.id" class="col-2 col-md-1 mb-2">
-                            <button 
-                              type="button" 
-                              class="btn btn-outline-secondary w-100 p-2"
-                              :class="{ 'active': event.icon === iconOption.icon }"
-                              @click="event.icon = iconOption.icon"
-                              :title="iconOption.label"
-                            >
-                              <i :class="iconOption.icon"></i>
-                            </button>
+                          <div class="col-md-6">
+                            <div class="mb-3">
+                              <label class="form-label">Título</label>
+                              <input v-model="event.title" type="text" class="form-control" placeholder="Ej: Ceremonia">
+                            </div>
+                          </div>
+                          <div class="col-md-6">
+                            <div class="mb-3">
+                              <label class="form-label">Horario</label>
+                              <input v-model="event.time" type="text" class="form-control" placeholder="Ej: 10:00AM - 11:00AM">
+                            </div>
                           </div>
                         </div>
-                        <small class="text-muted">Selecciona un icono para el evento</small>
+                        
+                        <div class="mb-3">
+                          <label class="form-label">Descripción</label>
+                          <textarea v-model="event.description" class="form-control" rows="2" placeholder="Descripción del evento..."></textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                          <label class="form-label">Icono</label>
+                          <div class="row">
+                            <div v-for="iconOption in predefinedIcons" :key="iconOption.id" class="col-2 col-md-1 mb-2">
+                              <button 
+                                type="button" 
+                                class="btn btn-outline-secondary w-100 p-2"
+                                :class="{ 'active': event.icon === iconOption.icon }"
+                                @click="event.icon = iconOption.icon"
+                                :title="iconOption.label"
+                              >
+                                <i :class="iconOption.icon"></i>
+                              </button>
+                            </div>
+                          </div>
+                          <small class="text-muted">Selecciona un icono para el evento</small>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-                
-                <div v-else class="text-center py-4 text-muted">
-                  <i class="ti ti-calendar" style="font-size: 2rem;"></i>
-                  <p class="mb-0">No hay eventos en el timeline. ¡Agrega el primer evento!</p>
+                  
+                  <div v-else class="text-center py-4 text-muted">
+                    <i class="ti ti-calendar" style="font-size: 2rem;"></i>
+                    <p class="mb-0">No hay eventos en el timeline. ¡Agrega el primer evento!</p>
+                  </div>
                 </div>
               </div>
               
               <!-- Sección de Música -->
               <div class="mb-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                  <h6 class="mb-0">Música de Fondo</h6>
+                  <h6 class="mb-0" data-bs-toggle="collapse" data-bs-target="#musicCollapse" role="button" aria-expanded="false" aria-controls="musicCollapse" style="cursor: pointer;">
+                    <i class="fas fa-music text-primary me-2"></i>
+                    Música de Fondo
+                    <i class="fas fa-chevron-down ms-2 text-muted"></i>
+                  </h6>
                 </div>
                 
-                <div class="mb-3">
-                  <label class="form-label">Seleccionar Música</label>
-                  <div class="row">
-                    <!-- Opción sin música -->
-                    <div class="col-md-6 col-lg-4 mb-3">
-                      <div 
-                        class="card h-100 cursor-pointer border"
-                        :class="{ 'border-primary bg-light': !form.music_id }"
-                        @click="selectNoMusic"
-                      >
-                        <div class="card-body p-3 text-center">
-                          <i class="fas fa-volume-mute text-muted mb-2" style="font-size: 2rem;"></i>
-                          <h6 class="card-title mb-0">Sin música</h6>
-                          <small class="text-muted">Invitación sin música de fondo</small>
-                        </div>
+                <div class="collapse" id="musicCollapse">
+                  <div class="mb-3">
+                    <label class="form-label">Seleccionar Música</label>
+                    
+                    <!-- Indicador de carga -->
+                    <div v-if="musicLoading" class="text-center py-4">
+                      <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Cargando música...</span>
                       </div>
+                      <p class="mt-2 text-muted">Cargando opciones de música...</p>
                     </div>
                     
-                    <!-- Música predefinida -->
-                    <div 
-                      v-for="music in predefinedMusic" 
-                      :key="music.id" 
-                      class="col-md-6 col-lg-4 mb-3"
-                    >
-                      <div 
-                        class="card h-100 cursor-pointer border"
-                        :class="{ 'border-primary bg-light': form.music_id === music.id }"
-                        @click="selectMusic(music)"
-                      >
-                        <div class="card-body p-3">
-                          <div class="d-flex align-items-center mb-2">
-                            <i class="fas fa-music text-primary me-2"></i>
-                            <div class="flex-grow-1">
-                              <h6 class="card-title mb-0 small">{{ music.name }}</h6>
-                              <small class="text-muted">Música predefinida</small>
+                    <!-- Contenido cuando la música está cargada -->
+                    <div v-else>
+                      <div class="row">
+                        <!-- Opción sin música -->
+                        <div class="col-md-6 col-lg-4 mb-3">
+                          <div 
+                            class="card cursor-pointer border"
+                            :class="{ 'border-primary bg-light': !form.music_id }"
+                            @click="selectNoMusic"
+                          >
+                            <div class="card-body p-3 text-center">
+                              <i class="fas fa-volume-mute text-muted mb-2" style="font-size: 0.95rem;"></i>
+                              <h6 class="card-title mb-0">Sin música</h6>
+                              <small class="text-muted">Invitación sin música de fondo</small>
                             </div>
-                            <i 
-                              v-if="form.music_id === music.id" 
-                              class="fas fa-check-circle text-primary"
-                            ></i>
                           </div>
-                          <div class="d-flex justify-content-between align-items-center">
-                            <span class="badge bg-secondary">Predefinida</span>
+                        </div>
+                        
+                        <!-- Música predefinida -->
+                        <div 
+                          v-for="music in predefinedMusic" 
+                          :key="music.id" 
+                          class="col-md-6 col-lg-4 mb-3"
+                        >
+                          <div 
+                            class="card cursor-pointer border"
+                            :class="{ 'border-primary bg-light': form.music_id === music.id }"
+                            @click="selectMusic(music)"
+                          >
+                            <div class="card-body p-3">
+                              <div class="d-flex align-items-center mb-2">
+                                <i class="fas fa-music text-primary me-2"></i>
+                                <div class="flex-grow-1">
+                                  <h6 class="card-title mb-0 small">{{ music.name }}</h6>
+                                  <small class="text-muted">Música predefinida</small>
+                                </div>
+                                <i 
+                                  v-if="form.music_id === music.id" 
+                                  class="fas fa-check-circle text-primary"
+                                ></i>
+                              </div>
+                              <div class="d-flex justify-content-between align-items-center">
+                                <span class="badge bg-secondary">Predefinida</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <!-- Música personalizada -->
+                        <div 
+                          v-for="music in customMusic" 
+                          :key="music.id" 
+                          class="col-md-6 col-lg-4 mb-3"
+                        >
+                          <div 
+                            class="card cursor-pointer border"
+                            :class="{ 'border-primary bg-light': form.music_id === music.id }"
+                            @click="selectMusic(music)"
+                          >
+                            <div class="card-body p-3">
+                              <div class="d-flex align-items-center mb-2">
+                                <i class="fas fa-music text-primary me-2"></i>
+                                <div class="flex-grow-1">
+                                  <h6 class="card-title mb-0 small">{{ music.name }}</h6>
+                                  <small class="text-muted">Música personalizada</small>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                  <i 
+                                    v-if="form.music_id === music.id" 
+                                    class="fas fa-check-circle text-primary me-2"
+                                  ></i>
+                                  <button 
+                                    type="button" 
+                                    class="btn btn-sm btn-outline-danger"
+                                    @click.stop="handleDeleteCustomMusic(music.id)"
+                                    title="Eliminar música personalizada"
+                                  >
+                                    <i class="fas fa-trash"></i>
+                                  </button>
+                                </div>
+                              </div>
+                              <div class="d-flex justify-content-between align-items-center">
+                                <span class="badge bg-warning">Personalizada</span>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                    
-                    <!-- Música personalizada -->
-                    <div 
-                      v-for="music in customMusic" 
-                      :key="music.id" 
-                      class="col-md-6 col-lg-4 mb-3"
-                    >
-                      <div 
-                        class="card h-100 cursor-pointer border"
-                        :class="{ 'border-primary bg-light': form.music_id === music.id }"
-                        @click="selectMusic(music)"
-                      >
-                        <div class="card-body p-3">
-                          <div class="d-flex align-items-center mb-2">
-                            <i class="fas fa-music text-primary me-2"></i>
-                            <div class="flex-grow-1">
-                              <h6 class="card-title mb-0 small">{{ music.name }}</h6>
-                              <small class="text-muted">Música personalizada</small>
-                            </div>
-                            <div class="d-flex align-items-center">
-                              <i 
-                                v-if="form.music_id === music.id" 
-                                class="fas fa-check-circle text-primary me-2"
-                              ></i>
-                              <button 
-                                type="button" 
-                                class="btn btn-sm btn-outline-danger"
-                                @click.stop="handleDeleteCustomMusic(music.id)"
-                                title="Eliminar música personalizada"
-                              >
-                                <i class="fas fa-trash"></i>
-                              </button>
-                            </div>
-                          </div>
-                          <div class="d-flex justify-content-between align-items-center">
-                            <span class="badge bg-warning">Personalizada</span>
-                          </div>
-                        </div>
+                      
+                      <!-- Mensaje si no hay música disponible -->
+                      <div v-if="predefinedMusic.length === 0 && customMusic.length === 0" class="text-center py-4 text-muted">
+                        <i class="fas fa-music" style="font-size: 2rem;"></i>
+                        <p class="mb-0">No hay música disponible. Sube música personalizada o contacta al administrador.</p>
                       </div>
                     </div>
                   </div>
-                </div>
-                
-                <!-- Subir música personalizada -->
-                <div class="mb-3">
-                  <label class="form-label">Subir Música Personalizada</label>
-                  <input 
-                    type="file" 
-                    class="form-control" 
-                    accept="audio/*"
-                    @change="onMusicFileChange"
-                    :disabled="musicLoading"
-                  >
-                  <div class="form-text">
-                    Formatos permitidos: MP3, WAV, OGG. Tamaño máximo: 10MB.
+                  
+                  <!-- Subir música personalizada -->
+                  <div class="mb-3">
+                    <label class="form-label">Subir Música Personalizada</label>
+                    <input 
+                      type="file" 
+                      class="form-control" 
+                      accept="audio/*"
+                      @change="onMusicFileChange"
+                      :disabled="musicLoading"
+                    >
+                    <div class="form-text">
+                      Formatos permitidos: MP3, WAV, OGG. Tamaño máximo: 10MB.
+                    </div>
                   </div>
-                </div>
-                
-                <!-- Vista previa de música seleccionada -->
-                <div v-if="selectedMusic" class="mt-3">
-                  <div class="card">
-                    <div class="card-body p-3">
-                      <div class="d-flex align-items-center justify-content-between">
-                        <div class="d-flex align-items-center">
-                          <i class="fas fa-music text-primary me-2"></i>
-                          <div>
-                            <strong>{{ selectedMusic.name }}</strong>
-                            <div class="small text-muted">
-                              {{ selectedMusic.type === 'predefined' ? 'Música predefinida' : 'Música personalizada' }}
+                  
+                  <!-- Vista previa de música seleccionada -->
+                  <div v-if="selectedMusic" class="mt-3">
+                    <div class="card">
+                      <div class="card-body p-3">
+                        <div class="d-flex align-items-center justify-content-between">
+                          <div class="d-flex align-items-center">
+                            <i class="fas fa-music text-primary me-2"></i>
+                            <div>
+                              <strong>{{ selectedMusic.name }}</strong>
+                              <div class="small text-muted">
+                                {{ selectedMusic.type === 'predefined' ? 'Música predefinida' : 'Música personalizada' }}
+                              </div>
                             </div>
                           </div>
+                          <audio controls class="ms-3" style="width: 200px;" :key="selectedMusic?.id || 'no-music'">
+                            <source :src="`${selectedMusic.url}`" type="audio/mpeg">
+                            Tu navegador no soporta el elemento audio.
+                          </audio>
                         </div>
-                        <audio controls class="ms-3" style="width: 200px;" :key="selectedMusic?.id || 'no-music'">
-                          <source :src="`${selectedMusic.url}`" type="audio/mpeg">
-                          Tu navegador no soporta el elemento audio.
-                        </audio>
                       </div>
                     </div>
                   </div>
@@ -641,16 +677,6 @@ const handleDeleteCustomMusic = async (musicId: string) => {
   }
 }
 
-const debugMusicState = () => {
-  console.log('=== Estado de Música ===')
-  console.log('musicTracks:', musicTracks.value)
-  console.log('predefinedMusic:', predefinedMusic.value)
-  console.log('customMusic:', customMusic.value)
-  console.log('selectedMusic:', selectedMusic.value)
-  console.log('form.music_id:', form.value.music_id)
-  console.log('musicLoading:', musicLoading.value)
-}
-
 const handleSubmit = async () => {
   loading.value = true
   try {
@@ -693,3 +719,73 @@ const handleSubmit = async () => {
   }
 }
 </script> 
+
+<style scoped>
+/* Estilos para los collapsibles */
+[data-bs-toggle="collapse"] {
+  transition: all 0.3s ease;
+}
+
+[data-bs-toggle="collapse"]:hover {
+  background-color: rgba(0, 123, 255, 0.05);
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin: -8px -12px;
+}
+
+[data-bs-toggle="collapse"][aria-expanded="true"] .fa-chevron-down {
+  transform: rotate(180deg);
+}
+
+.fa-chevron-down {
+  transition: transform 0.3s ease;
+}
+
+/* Animación para el contenido del collapse */
+.collapse {
+  transition: all 0.3s ease;
+}
+
+.collapse.show {
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Mejoras para las tarjetas de música */
+.cursor-pointer {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cursor-pointer:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos para botones de acción */
+.btn-outline-primary:hover {
+  transform: scale(1.05);
+}
+
+/* Responsive para móviles */
+@media (max-width: 768px) {
+  [data-bs-toggle="collapse"] {
+    padding: 6px 8px;
+    margin: -6px -8px;
+  }
+  
+  .fa-chevron-down {
+    font-size: 0.8rem;
+  }
+}
+</style> 
