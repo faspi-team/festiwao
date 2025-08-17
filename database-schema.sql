@@ -37,6 +37,11 @@ CREATE TABLE invitations (
   photo_url VARCHAR(255),
   story JSONB,
   wedding_timeline JSONB,
+  -- Colores personalizados
+  primary_color VARCHAR(7),
+  secondary_color VARCHAR(7),
+  background_color VARCHAR(7),
+  text_color VARCHAR(7),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );

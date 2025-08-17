@@ -105,12 +105,21 @@
                         :to="`/invitation/${invitation.unique_url}`" 
                         class="btn btn-outline-primary"
                         target="_blank"
+                        title="Ver invitación"
                       >
                         <i class="ti ti-eye"></i>
+                      </NuxtLink>
+                      <NuxtLink 
+                        :to="`/admin/gallery/${invitation.unique_url}`" 
+                        class="btn btn-outline-info"
+                        title="Gestionar galería"
+                      >
+                        <i class="ti ti-photo"></i>
                       </NuxtLink>
                       <button 
                         class="btn btn-outline-secondary"
                         @click="copyUrl(invitation)"
+                        title="Copiar URL"
                       >
                         <i class="ti ti-copy"></i>
                       </button>

@@ -76,6 +76,181 @@
                 <label class="form-label">Descripción</label>
                 <textarea v-model="form.description" class="form-control" rows="3" placeholder="Detalles adicionales del evento"></textarea>
               </div>
+
+              <!-- Personalización de Colores -->
+              <div class="mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <h6 class="mb-0" data-bs-toggle="collapse" data-bs-target="#colorsCollapse" role="button" aria-expanded="false" aria-controls="colorsCollapse" style="cursor: pointer;">
+                    <i class="fas fa-palette text-primary me-2"></i>
+                    Personalización de Colores
+                    <i class="fas fa-chevron-down ms-2 text-muted"></i>
+                  </h6>
+                  <button 
+                    type="button" 
+                    class="btn btn-sm btn-outline-secondary"
+                    @click="resetColors"
+                    title="Restablecer colores por defecto"
+                  >
+                    <i class="fas fa-undo"></i> Restablecer
+                  </button>
+                </div>
+                
+                <div class="collapse" id="colorsCollapse">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="mb-3">
+                        <label class="form-label">Color Principal</label>
+                        <div class="d-flex align-items-center">
+                          <input 
+                            v-model="form.primary_color" 
+                            type="color" 
+                            class="form-control form-control-color me-2" 
+                            style="width: 60px; height: 40px;"
+                            title="Seleccionar color principal"
+                          >
+                          <input 
+                            v-model="form.primary_color" 
+                            type="text" 
+                            class="form-control" 
+                            placeholder="#007bff"
+                            pattern="^#[0-9A-Fa-f]{6}$"
+                          >
+                        </div>
+                        <small class="text-muted">Color principal para títulos y elementos destacados</small>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="mb-3">
+                        <label class="form-label">Color Secundario</label>
+                        <div class="d-flex align-items-center">
+                          <input 
+                            v-model="form.secondary_color" 
+                            type="color" 
+                            class="form-control form-control-color me-2" 
+                            style="width: 60px; height: 40px;"
+                            title="Seleccionar color secundario"
+                          >
+                          <input 
+                            v-model="form.secondary_color" 
+                            type="text" 
+                            class="form-control" 
+                            placeholder="#6c757d"
+                            pattern="^#[0-9A-Fa-f]{6}$"
+                          >
+                        </div>
+                        <small class="text-muted">Color secundario para textos y elementos de apoyo</small>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="mb-3">
+                        <label class="form-label">Color de Fondo</label>
+                        <div class="d-flex align-items-center">
+                          <input 
+                            v-model="form.background_color" 
+                            type="color" 
+                            class="form-control form-control-color me-2" 
+                            style="width: 60px; height: 40px;"
+                            title="Seleccionar color de fondo"
+                          >
+                          <input 
+                            v-model="form.background_color" 
+                            type="text" 
+                            class="form-control" 
+                            placeholder="#ffffff"
+                            pattern="^#[0-9A-Fa-f]{6}$"
+                          >
+                        </div>
+                        <small class="text-muted">Color de fondo principal de la invitación</small>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="mb-3">
+                        <label class="form-label">Color de Texto</label>
+                        <div class="d-flex align-items-center">
+                          <input 
+                            v-model="form.text_color" 
+                            type="color" 
+                            class="form-control form-control-color me-2" 
+                            style="width: 60px; height: 40px;"
+                            title="Seleccionar color de texto"
+                          >
+                          <input 
+                            v-model="form.text_color" 
+                            type="text" 
+                            class="form-control" 
+                            placeholder="#212529"
+                            pattern="^#[0-9A-Fa-f]{6}$"
+                          >
+                        </div>
+                        <small class="text-muted">Color principal para textos</small>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Vista previa de colores -->
+                  <div class="mb-3">
+                    <label class="form-label">Vista Previa de Colores</label>
+                    <div class="card" :style="{ backgroundColor: form.background_color || '#ffffff' }">
+                      <div class="card-body p-3">
+                        <h5 :style="{ color: form.primary_color || '#007bff' }">Título Principal</h5>
+                        <p :style="{ color: form.text_color || '#212529' }">Este es un ejemplo de texto con los colores seleccionados. Aquí puedes ver cómo se verá tu invitación con la combinación de colores elegida.</p>
+                        <span class="badge" :style="{ backgroundColor: form.secondary_color || '#6c757d', color: '#ffffff' }">Elemento Secundario</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Paletas de colores predefinidas -->
+                  <div class="mb-3">
+                    <label class="form-label">Paletas Predefinidas</label>
+                    <div class="row">
+                      <div 
+                        v-for="palette in colorPalettes" 
+                        :key="palette.name"
+                        class="col-md-3 col-sm-6 mb-2"
+                      >
+                        <div 
+                          class="card cursor-pointer border"
+                          :class="{ 'border-primary': selectedPalette === palette.name }"
+                          @click="applyColorPalette(palette)"
+                          :title="palette.name"
+                        >
+                          <div class="card-body p-2">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                              <small class="fw-bold">{{ palette.name }}</small>
+                              <i v-if="selectedPalette === palette.name" class="fas fa-check text-primary"></i>
+                            </div>
+                            <div class="d-flex gap-1">
+                              <div 
+                                class="color-preview" 
+                                :style="{ backgroundColor: palette.colors.primary }"
+                                :title="palette.colors.primary"
+                              ></div>
+                              <div 
+                                class="color-preview" 
+                                :style="{ backgroundColor: palette.colors.secondary }"
+                                :title="palette.colors.secondary"
+                              ></div>
+                              <div 
+                                class="color-preview" 
+                                :style="{ backgroundColor: palette.colors.background }"
+                                :title="palette.colors.background"
+                              ></div>
+                              <div 
+                                class="color-preview" 
+                                :style="{ backgroundColor: palette.colors.text }"
+                                :title="palette.colors.text"
+                              ></div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
               
               <!-- Historia de Amor -->
               <div class="mb-4">
@@ -421,15 +596,20 @@ const form = ref({
   template_id: '',
   music_id: '',
   groom_name: '',
-  bride_name: '',
   groom_description: '',
+  bride_name: '',
   bride_description: '',
   event_date: '',
   venue: '',
   description: '',
-  photo_url: '',
   story: [] as { id: string; title: string; date: string; description: string; image: string }[],
-  wedding_timeline: [] as { id: string; title: string; time: string; description: string; icon: string }[]
+  wedding_timeline: [] as { id: string; title: string; time: string; description: string; icon: string }[],
+  photo_url: '',
+  // Colores personalizados con valores por defecto de la plantilla original
+  primary_color: '#fd5d5d',
+  secondary_color: '#BBBD98',
+  background_color: '#ffffff',
+  text_color: '#2F2F2F'
 })
 
 const loading = ref(false)
@@ -518,7 +698,11 @@ onMounted(async () => {
         description: data.description || '',
         photo_url: data.photo_url || '',
         story: parseJsonField(data.story, []),
-        wedding_timeline: parseJsonField(data.wedding_timeline, [])
+        wedding_timeline: parseJsonField(data.wedding_timeline, []),
+        primary_color: data.primary_color || '#007bff',
+        secondary_color: data.secondary_color || '#6c757d',
+        background_color: data.background_color || '#ffffff',
+        text_color: data.text_color || '#212529'
       }
       
       console.log('Form preloaded with:', form.value)
@@ -694,7 +878,6 @@ const handleSubmit = async () => {
       
       if (result) {
         alert('Invitación actualizada exitosamente')
-        router.push('/invitations')
       } else {
         throw new Error('Error actualizando la invitación')
       }
@@ -717,6 +900,77 @@ const handleSubmit = async () => {
   } finally {
     loading.value = false
   }
+}
+
+// Funciones para personalización de colores
+const colorPalettes = [
+  {
+    name: 'Original',
+    description: 'Colores originales de la plantilla',
+    colors: {
+      primary: '#fd5d5d',
+      secondary: '#BBBD98',
+      background: '#ffffff',
+      text: '#2F2F2F'
+    }
+  },
+  {
+    name: 'Azul Claro',
+    description: 'Paleta suave en tonos azules',
+    colors: {
+      primary: '#007bff',
+      secondary: '#6c757d',
+      background: '#ffffff',
+      text: '#212529'
+    }
+  },
+  {
+    name: 'Verde Naturaleza',
+    description: 'Tonos verdes y tierra',
+    colors: {
+      primary: '#28a745',
+      secondary: '#6f42c1',
+      background: '#f8f9fa',
+      text: '#495057'
+    }
+  },
+  {
+    name: 'Rosa Romántico',
+    description: 'Paleta romántica en rosas',
+    colors: {
+      primary: '#e83e8c',
+      secondary: '#fd7e14',
+      background: '#fff5f5',
+      text: '#6f42c1'
+    }
+  },
+  {
+    name: 'Oro Elegante',
+    description: 'Tonos dorados y elegantes',
+    colors: {
+      primary: '#ffc107',
+      secondary: '#fd7e14',
+      background: '#fff8e1',
+      text: '#8d6e63'
+    }
+  }
+]
+
+const selectedPalette = ref('Azul Claro')
+
+const applyColorPalette = (palette: any) => {
+  form.value.primary_color = palette.colors.primary
+  form.value.secondary_color = palette.colors.secondary
+  form.value.background_color = palette.colors.background
+  form.value.text_color = palette.colors.text
+  selectedPalette.value = palette.name
+}
+
+const resetColors = () => {
+  form.value.primary_color = '#fd5d5d'
+  form.value.secondary_color = '#BBBD98'
+  form.value.background_color = '#ffffff'
+  form.value.text_color = '#2F2F2F'
 }
 </script> 
 
@@ -787,5 +1041,61 @@ const handleSubmit = async () => {
   .fa-chevron-down {
     font-size: 0.8rem;
   }
+}
+
+/* Estilos para personalización de colores */
+.color-preview {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  border: 1px solid #dee2e6;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.color-preview:hover {
+  transform: scale(1.1);
+}
+
+.form-control-color {
+  border: 2px solid #dee2e6;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.form-control-color:hover {
+  border-color: #007bff;
+}
+
+.form-control-color:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Vista previa de colores */
+.color-preview-card {
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.color-preview-card:hover {
+  border-color: #007bff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Paletas de colores */
+.palette-card {
+  transition: all 0.2s ease;
+}
+
+.palette-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.palette-card.border-primary {
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
 }
 </style> 

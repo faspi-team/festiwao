@@ -32,6 +32,18 @@ export interface WeddingTimelineEvent {
   icon: string
 }
 
+export interface GalleryPhoto {
+  id: string
+  invitation_id: string
+  title?: string
+  description?: string
+  image_url: string
+  thumbnail_url?: string
+  order_index: number
+  created_at: string
+  updated_at: string
+}
+
 export interface Invitation {
   id: string
   user_id: string
@@ -51,8 +63,15 @@ export interface Invitation {
   created_at: string
   updated_at: string
   photo_url?: string
+  // Colores personalizados
+  primary_color?: string
+  secondary_color?: string
+  background_color?: string
+  text_color?: string
   // Relación con música (opcional, para cuando se hace JOIN)
   music?: MusicTrack
+  // Relación con galería de fotos (opcional, para cuando se hace JOIN)
+  gallery_photos?: GalleryPhoto[]
 }
 
 export interface RSVPResponse {
@@ -78,6 +97,11 @@ export interface CreateInvitationData {
   photo_url?: string
   story?: string
   wedding_timeline?: string
+  // Colores personalizados
+  primary_color?: string
+  secondary_color?: string
+  background_color?: string
+  text_color?: string
 }
 
 export interface CreateMusicTrackData {
@@ -85,4 +109,13 @@ export interface CreateMusicTrackData {
   type: 'predefined' | 'custom'
   url?: string
   file_path?: string
+}
+
+export interface CreateGalleryPhotoData {
+  invitation_id: string
+  title?: string
+  description?: string
+  image_url: string
+  thumbnail_url?: string
+  order_index?: number
 } 

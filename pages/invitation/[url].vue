@@ -4,7 +4,7 @@
         <span class="visually-hidden">Loading...</span>
       </div>
     </div>
-  <div v-if="invitation">    
+  <div v-if="invitation" :style="invitationStyles">    
     <!-- Reproductor de música flotante -->
     <div 
       v-if="invitation.music && invitation.music.url" 
@@ -14,24 +14,19 @@
         <div class="music-controls">
           <button 
             @click="toggleMusic" 
-            class="btn btn-primary btn-sm rounded-circle me-2"
+            class="btn btn-sm rounded-circle me-2"
+            :style="{ backgroundColor: invitation.primary_color || '#fd5d5d', borderColor: invitation.primary_color || '#fd5d5d' }"
             :title="isPlaying ? 'Pausar música' : 'Reproducir música'"
-            :disabled="!audioLoaded"
           >
             <i :class="isPlaying ? 'fas fa-pause' : 'fas fa-play'"></i>
           </button>
           <div class="music-info">
-            <small class="text-muted d-block">{{ invitation.music.name }}</small>
-            <small v-if="!audioLoaded" class="text-muted d-block">Cargando...</small>
-            <small v-else-if="!isPlaying && !autoplayBlocked" class="text-primary d-block">Reproducción automática en 2s...</small>
-            <small v-else-if="!isPlaying && autoplayBlocked" class="text-warning d-block">Click para reproducir</small>
-            <small v-else class="text-success d-block">Reproduciendo</small>
+            <small class="d-block" :style="{ color: invitation.text_color || '#2F2F2F' }">{{ invitation.music.name }}</small>
           </div>
           <button 
             @click="toggleMute" 
             class="btn btn-outline-secondary btn-sm rounded-circle ms-2"
             :title="isMuted ? 'Activar sonido' : 'Silenciar'"
-            :disabled="!audioLoaded || !isPlaying"
           >
             <i :class="isMuted ? 'fas fa-volume-mute' : 'fas fa-volume-up'"></i>
           </button>
@@ -60,7 +55,7 @@
                         <div class="d-inline-block border-end-0 border-start-0 border-secondary p-2 mb-4" style="border-style: double;">
                             <h4 class="text-white text-uppercase fw-bold mb-0" style="letter-spacing: 3px;">Nos casamos</h4>
                         </div>
-                        <h1 class="display-1 text-capitalize text-white mb-3">{{ invitation.bride_name }} <i class="fa fa-heart text-primary"></i> {{ invitation.groom_name }}</h1>
+                        <h1 class="display-1 text-capitalize text-white mb-3">{{ invitation.bride_name }} <i class="fa fa-heart" :style="{ color: '#fd5d5d' }"></i> {{ invitation.groom_name }}</h1>
                         <div class="d-inline-block border-end-0 border-start-0 border-secondary p-2 mb-5" style="border-style: double;">
                             <h4 class="text-white text-uppercase fw-bold mb-0" style="letter-spacing: 3px;"> {{ formatDate(invitation.event_date) }}</h4>
                         </div>
@@ -80,8 +75,8 @@
     </div>
     <div class="container position-relative py-5">
       <div class="mx-auto text-center mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 800;">
-        <h1 class="text-primary display-1">Hola!</h1>
-        <h4 class="text-dark mb-0">Te invitamos a celebrar nuestra boda</h4>
+        <h1 class="display-1" :style="{ color: invitation.primary_color || '#fd5d5d' }">Hola!</h1>
+        <h4 class="mb-0" :style="{ color: invitation.text_color || '#2F2F2F' }">Te invitamos a celebrar nuestra boda</h4>
       </div>
       <div class="row">
         <div class="col-lg-12">
@@ -89,23 +84,23 @@
                 <div class="col-lg-5 wow fadeInUp" data-wow-delay="0.3s">
                     <div class="d-flex">
                         <div class="text-end my-auto pe-4">
-                            <h3 class="text-primary mb-3">{{ invitation.bride_name }}</h3>
-                            <p class="text-dark mb-0" style="line-height: 30px;">{{ invitation.bride_description }}</p>
+                            <h3 class="mb-3" :style="{ color: invitation.primary_color || '#fd5d5d' }">{{ invitation.bride_name }}</h3>
+                            <p class="mb-0" :style="{ color: invitation.text_color || '#2F2F2F', lineHeight: '30px' }">{{ invitation.bride_description }}</p>
                         </div>
                         <img src="/assets/layouts/classic/img/bride.jpg" class="img-fluid img-border" alt="">
                     </div>
                 </div>
                 <div class="col-lg-2 wow fadeIn" data-wow-delay="0.5s">
                     <div class="d-flex align-items-center justify-content-center">
-                        <i class="fa fa-heart fa-5x text-primary"></i>
+                        <i class="fa fa-heart fa-5x" :style="{ color: invitation.primary_color || '#fd5d5d' }"></i>
                     </div>
                 </div>
                 <div class="col-lg-5 wow fadeInUp" data-wow-delay="0.3s">
                     <div class="d-flex">
                         <img src="/assets/layouts/classic/img/Groom.jpg" class="img-fluid img-border" alt="">
                         <div class="my-auto ps-4">
-                            <h3 class="text-primary mb-3">{{ invitation.groom_name }}</h3>
-                            <p class="text-dark mb-0" style="line-height: 30px;">{{ invitation.groom_description }}</p>
+                            <h3 class="mb-3" :style="{ color: invitation.primary_color || '#fd5d5d' }">{{ invitation.groom_name }}</h3>
+                            <p class="mb-0" :style="{ color: invitation.text_color || '#2F2F2F', lineHeight: '30px' }">{{ invitation.groom_description }}</p>
                         </div>
                     </div>
                 </div>
@@ -125,8 +120,8 @@
       </div>
       <div class="container position-relative py-5">
           <div class="text-center mb-5 wow fadeInUp" data-wow-delay="0.1s">
-              <h5 class="text-uppercase text-primary fw-bold mb-4">Story</h5>
-              <h1 class="display-4">Nuestra historia de amor</h1>
+              <h5 class="text-uppercase fw-bold mb-4" :style="{ color: invitation.primary_color || '#fd5d5d' }">Story</h5>
+              <h1 class="display-4" :style="{ color: invitation.text_color || '#2F2F2F' }">Nuestra historia de amor</h1>
           </div>
           <div class="story-timeline">
             <div 
@@ -153,11 +148,11 @@
                 :class="index % 2 === 0 ? 'border-start pe-0' : 'text-end border-end ps-0'"
               >
                 <div class="h-100 d-flex flex-column justify-content-center bg-secondary p-4">
-                  <h4 class="mb-2 text-dark">{{ event.title }}</h4>
-                  <p class="text-uppercase text-primary mb-2" style="letter-spacing: 3px;">
+                  <h4 class="mb-2" :style="{ color: invitation.text_color || '#2F2F2F' }">{{ event.title }}</h4>
+                  <p class="text-uppercase mb-2" :style="{ color: invitation.primary_color || '#fd5d5d', letterSpacing: '3px' }">
                     {{ formatStoryDate(event.date) }}
                   </p>
-                  <p class="m-0 fs-5">{{ event.description }}</p>
+                  <p class="m-0 fs-5" :style="{ color: invitation.text_color || '#2F2F2F' }">{{ event.description }}</p>
                 </div>
               </div>              
               <div 
@@ -190,24 +185,24 @@
           <div class="wedding-date text-center bg-light p-5" style="border-style: double !important; border: 15px solid rgba(253, 93, 93, 0.5);">
               <div class="wedding-date-content">
                   <div class="d-inline-block border-end-0 border-start-0 border-secondary p-2 mb-4" style="border-style: double;">
-                      <h4 class="text-dark text-uppercase fw-bold mb-0" style="letter-spacing: 3px;">{{ formatDate(invitation.event_date) }}</h4>
+                      <h4 class="text-uppercase fw-bold mb-0" :style="{ color: invitation.text_color || '#2F2F2F', letterSpacing: '3px' }">{{ formatDate(invitation.event_date) }}</h4>
                   </div>
-                  <h1 class="display-4">Nos casamos</h1>
-                  <p class="text-dark fs-5">{{ invitation.venue }}</p>
+                  <h1 class="display-4" :style="{ color: invitation.text_color || '#2F2F2F' }">Nos casamos</h1>
+                  <p class="fs-5" :style="{ color: invitation.text_color || '#2F2F2F' }">{{ invitation.venue }}</p>
                   <div class="d-flex align-items-center justify-content-center mb-5">
-                    <div class="text-dark fs-2 me-4">
+                    <div class="fs-2 me-4" :style="{ color: invitation.text_color || '#2F2F2F' }">
                       <div>{{ countdown.days }}</div>
                       <span>Días</span>
                     </div>
-                    <div class="text-dark fs-2 me-4">
+                    <div class="fs-2 me-4" :style="{ color: invitation.text_color || '#2F2F2F' }">
                       <div>{{ countdown.hours }}</div>
                       <span>Horas</span>
                     </div>
-                    <div class="text-dark fs-2 me-4">
+                    <div class="fs-2 me-4" :style="{ color: invitation.text_color || '#2F2F2F' }">
                       <div>{{ countdown.minutes }}</div>
                       <span>Mins</span>
                     </div>
-                    <div class="text-dark fs-2 me-0">
+                    <div class="fs-2 me-0" :style="{ color: invitation.text_color || '#2F2F2F' }">
                       <div>{{ countdown.seconds }}</div>
                       <span>Secs</span>
                     </div>
@@ -245,11 +240,11 @@
                   >
                       <div class="border rounded p-3 h-100 text-center wow fadeIn" :data-wow-delay="`${0.1 + index * 0.2}s`">
                           <div class="mb-4 p-3 d-inline-flex">
-                              <i :class="`${event.icon || 'fas fa-calendar'} text-primary fa-3x`"></i>
+                              <i :class="`${event.icon || 'fas fa-calendar'} fa-3x`" :style="{ color: invitation.primary_color || '#fd5d5d' }"></i>
                           </div>
-                          <p class="text-primary">{{ event.time }}</p>
-                          <h3 class="text-dark">{{ event.title }}</h3>
-                          <p class="text-dark">{{ event.description }}</p>
+                          <p :style="{ color: invitation.primary_color || '#fd5d5d' }">{{ event.time }}</p>
+                          <h3 :style="{ color: invitation.text_color || '#2F2F2F' }">{{ event.title }}</h3>
+                          <p :style="{ color: invitation.text_color || '#2F2F2F' }">{{ event.description }}</p>
                       </div>
                   </div>
               </div>
@@ -270,6 +265,61 @@
       </div>
   </div>
   <!-- Wedding Timeline End -->
+
+  <!-- Gallery Start -->
+  <div class="container-fluid gallery position-relative py-5" id="weddingGallery">
+    <div class="position-absolute" style="top: -95px; right: 0;">
+      <img src="/assets/layouts/classic/img/tamp-bg-1.png" class="img-fluid" alt="">
+    </div>
+    <div class="position-absolute" style="top: -80px; left: 0; transform: rotate(150deg);">
+      <img src="/assets/layouts/classic/img/tamp-bg-1.png" class="img-fluid" alt="">
+    </div>
+    <div class="container position-relative py-5">
+        <div class="text-center mx-auto pb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 800px;">
+            <h1 class="display-2 text-dark">Wedding Gallery</h1>
+            <p class="fs-5 text-dark">Lorem Ipsum is simply dummy text of the printing and typesetting</p>
+        </div>
+        <div class="row g-4">
+            <!-- Galería dinámica -->
+            <template v-if="galleryPhotos.length > 0">
+                <div 
+                    v-for="(photo, index) in galleryPhotos" 
+                    :key="photo.id"
+                    class="col-md-6 col-lg-4 col-xl-3 wow fadeInUp" 
+                    :data-wow-delay="`${0.2 + (index * 0.2)}s`"
+                >
+                    <div class="gallery-item">
+                        <div class="gallery-img">
+                            <img class="img-fluid w-100" :src="photo.image_url" :alt="photo.title || 'Foto de la galería'">
+                            <div class="hover-style"></div>
+                            <div class="search-icon">
+                                <a :href="photo.image_url" :data-lightbox="`Gallery-${photo.id}`" class="my-auto">
+                                    <i class="fas fa-plus btn-primary btn-primary-outline-0 p-3"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="gallery-overlay bg-light border-secondary border-top-0 p-4" style="border-style: double;">
+                            <h5>{{ photo.title || 'Foto de la boda' }}</h5>
+                            <p class="text-dark mb-0">{{ photo.description || formatDate(invitation.event_date) }}</p>
+                        </div>
+                    </div>
+                </div>
+            </template>
+            
+            <!-- Mensaje cuando no hay fotos -->
+            <template v-else>
+                <div class="col-12 text-center">
+                    <div class="py-5">
+                        <i class="fas fa-images fa-3x mb-3" :style="{ color: invitation.primary_color || '#fd5d5d' }"></i>
+                        <h4 class="mb-3" :style="{ color: invitation.text_color || '#2F2F2F' }">Galería de Fotos</h4>
+                        <p class="text-muted">Las fotos de nuestra boda aparecerán aquí pronto.</p>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </div>
+  </div>
+<!-- Gallery end -->
   </div>
   
 </template>
@@ -331,7 +381,7 @@
   }
 }
 
-/* Responsive */
+/* Responsive para móviles */
 @media (max-width: 768px) {
   .music-player-container {
     top: 10px;
@@ -354,13 +404,50 @@
   cursor: pointer;
 }
 
-.music-controls button:disabled {
-  cursor: not-allowed;
-  opacity: 0.6;
-}
-
 .music-player {
   user-select: none;
+}
+
+/* Variables CSS personalizadas para colores */
+:root {
+  --primary-color: #fd5d5d;
+  --secondary-color: #BBBD98;
+  --background-color: #ffffff;
+  --text-color: #2F2F2F;
+}
+
+/* Aplicar colores personalizados a elementos específicos */
+.text-primary {
+  color: var(--primary-color) !important;
+}
+
+.bg-primary {
+  background-color: var(--primary-color) !important;
+}
+
+.text-secondary {
+  color: var(--secondary-color) !important;
+}
+
+.bg-secondary {
+  background-color: var(--secondary-color) !important;
+}
+
+/* Estilos para elementos con colores personalizados */
+.custom-primary {
+  color: var(--primary-color);
+}
+
+.custom-secondary {
+  color: var(--secondary-color);
+}
+
+.custom-background {
+  background-color: var(--background-color);
+}
+
+.custom-text {
+  color: var(--text-color);
 }
 
 /* Animación para el estado de carga */
@@ -422,6 +509,11 @@ const weddingTimeline = computed(() => {
     console.error('Error parsing wedding timeline:', error)
     return []
   }
+})
+
+const galleryPhotos = computed(() => {
+  if (!invitation.value?.gallery_photos) return []
+  return invitation.value.gallery_photos
 })
 
 const countdown = ref({
@@ -545,4 +637,16 @@ const loadInvitation = async () => {
     loading.value = false
   }
 }
+
+// Estilos dinámicos para la invitación
+const invitationStyles = computed(() => {
+  if (!invitation.value) return {}
+  
+  return {
+    '--primary-color': invitation.value.primary_color || '#fd5d5d',
+    '--secondary-color': invitation.value.secondary_color || '#BBBD98',
+    '--background-color': invitation.value.background_color || '#ffffff',
+    '--text-color': invitation.value.text_color || '#2F2F2F'
+  }
+})
 </script> 
