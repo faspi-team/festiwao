@@ -8,11 +8,23 @@ CREATE TABLE templates (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- Tabla de música
+CREATE TABLE music_tracks (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  type VARCHAR(50) NOT NULL DEFAULT 'predefined', -- 'predefined', 'custom'
+  url VARCHAR(500),
+  file_path VARCHAR(500), -- Para archivos subidos localmente
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
 -- Tabla de invitaciones
 CREATE TABLE invitations (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
   template_id UUID REFERENCES templates(id),
+  music_id UUID REFERENCES music_tracks(id) ON DELETE SET NULL,
   groom_name VARCHAR(255),
   bride_name VARCHAR(255),
   groom_description TEXT,
@@ -47,14 +59,35 @@ INSERT INTO templates (name, description) VALUES
   ('Romántico', 'Diseño romántico con flores'),
   ('Elegante', 'Diseño sofisticado y formal');
 
+-- Insertar música predefinida con rutas de assets locales
+INSERT INTO music_tracks (name, type, url) VALUES
+  ('A Thousand Years', 'predefined', '/assets/music/a-thousand-years.mp3'),
+  ('Perfect', 'predefined', '/assets/music/perfect.mp3'),
+  ('All of Me', 'predefined', '/assets/music/all-of-me.mp3'),
+  ('Marry Me', 'predefined', '/assets/music/marry-me.mp3');
+
 -- Políticas de seguridad RLS (Row Level Security)
 ALTER TABLE templates ENABLE ROW LEVEL SECURITY;
+ALTER TABLE music_tracks ENABLE ROW LEVEL SECURITY;
 ALTER TABLE invitations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE rsvp_responses ENABLE ROW LEVEL SECURITY;
 
 -- Políticas para templates (lectura pública)
 CREATE POLICY "Templates are viewable by everyone" ON templates
   FOR SELECT USING (true);
+
+-- Políticas para music_tracks
+CREATE POLICY "Music tracks are viewable by everyone" ON music_tracks
+  FOR SELECT USING (true);
+
+CREATE POLICY "Authenticated users can insert custom music" ON music_tracks
+  FOR INSERT WITH CHECK (auth.uid() IS NOT NULL);
+
+CREATE POLICY "Users can update their own custom music" ON music_tracks
+  FOR UPDATE USING (auth.uid() IS NOT NULL) WITH CHECK (auth.uid() IS NOT NULL);
+
+CREATE POLICY "Users can delete their own custom music" ON music_tracks
+  FOR DELETE USING (auth.uid() IS NOT NULL);
 
 -- Políticas para invitations
 CREATE POLICY "Authenticated users can view all invitations" ON invitations
@@ -97,6 +130,9 @@ $$ language 'plpgsql';
 
 -- Triggers para actualizar updated_at
 CREATE TRIGGER update_templates_updated_at BEFORE UPDATE ON templates
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_music_tracks_updated_at BEFORE UPDATE ON music_tracks
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 CREATE TRIGGER update_invitations_updated_at BEFORE UPDATE ON invitations

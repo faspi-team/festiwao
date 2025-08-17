@@ -199,10 +199,145 @@
                 </div>
               </div>
               
+              <!-- Sección de Música -->
+              <div class="mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <h6 class="mb-0">Música de Fondo</h6>
+                </div>
+                
+                <div class="mb-3">
+                  <label class="form-label">Seleccionar Música</label>
+                  <div class="row">
+                    <!-- Opción sin música -->
+                    <div class="col-md-6 col-lg-4 mb-3">
+                      <div 
+                        class="card h-100 cursor-pointer border"
+                        :class="{ 'border-primary bg-light': !form.music_id }"
+                        @click="selectNoMusic"
+                      >
+                        <div class="card-body p-3 text-center">
+                          <i class="fas fa-volume-mute text-muted mb-2" style="font-size: 2rem;"></i>
+                          <h6 class="card-title mb-0">Sin música</h6>
+                          <small class="text-muted">Invitación sin música de fondo</small>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <!-- Música predefinida -->
+                    <div 
+                      v-for="music in predefinedMusic" 
+                      :key="music.id" 
+                      class="col-md-6 col-lg-4 mb-3"
+                    >
+                      <div 
+                        class="card h-100 cursor-pointer border"
+                        :class="{ 'border-primary bg-light': form.music_id === music.id }"
+                        @click="selectMusic(music)"
+                      >
+                        <div class="card-body p-3">
+                          <div class="d-flex align-items-center mb-2">
+                            <i class="fas fa-music text-primary me-2"></i>
+                            <div class="flex-grow-1">
+                              <h6 class="card-title mb-0 small">{{ music.name }}</h6>
+                              <small class="text-muted">Música predefinida</small>
+                            </div>
+                            <i 
+                              v-if="form.music_id === music.id" 
+                              class="fas fa-check-circle text-primary"
+                            ></i>
+                          </div>
+                          <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge bg-secondary">Predefinida</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <!-- Música personalizada -->
+                    <div 
+                      v-for="music in customMusic" 
+                      :key="music.id" 
+                      class="col-md-6 col-lg-4 mb-3"
+                    >
+                      <div 
+                        class="card h-100 cursor-pointer border"
+                        :class="{ 'border-primary bg-light': form.music_id === music.id }"
+                        @click="selectMusic(music)"
+                      >
+                        <div class="card-body p-3">
+                          <div class="d-flex align-items-center mb-2">
+                            <i class="fas fa-music text-primary me-2"></i>
+                            <div class="flex-grow-1">
+                              <h6 class="card-title mb-0 small">{{ music.name }}</h6>
+                              <small class="text-muted">Música personalizada</small>
+                            </div>
+                            <div class="d-flex align-items-center">
+                              <i 
+                                v-if="form.music_id === music.id" 
+                                class="fas fa-check-circle text-primary me-2"
+                              ></i>
+                              <button 
+                                type="button" 
+                                class="btn btn-sm btn-outline-danger"
+                                @click.stop="handleDeleteCustomMusic(music.id)"
+                                title="Eliminar música personalizada"
+                              >
+                                <i class="fas fa-trash"></i>
+                              </button>
+                            </div>
+                          </div>
+                          <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge bg-warning">Personalizada</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Subir música personalizada -->
+                <div class="mb-3">
+                  <label class="form-label">Subir Música Personalizada</label>
+                  <input 
+                    type="file" 
+                    class="form-control" 
+                    accept="audio/*"
+                    @change="onMusicFileChange"
+                    :disabled="musicLoading"
+                  >
+                  <div class="form-text">
+                    Formatos permitidos: MP3, WAV, OGG. Tamaño máximo: 10MB.
+                  </div>
+                </div>
+                
+                <!-- Vista previa de música seleccionada -->
+                <div v-if="selectedMusic" class="mt-3">
+                  <div class="card">
+                    <div class="card-body p-3">
+                      <div class="d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center">
+                          <i class="fas fa-music text-primary me-2"></i>
+                          <div>
+                            <strong>{{ selectedMusic.name }}</strong>
+                            <div class="small text-muted">
+                              {{ selectedMusic.type === 'predefined' ? 'Música predefinida' : 'Música personalizada' }}
+                            </div>
+                          </div>
+                        </div>
+                        <audio controls class="ms-3" style="width: 200px;" :key="selectedMusic?.id || 'no-music'">
+                          <source :src="`${selectedMusic.url}`" type="audio/mpeg">
+                          Tu navegador no soporta el elemento audio.
+                        </audio>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
               <div class="d-flex justify-content-end">
                 <NuxtLink to="/invitations" class="btn btn-secondary me-2">Cancelar</NuxtLink>
-                <button type="submit" class="btn btn-primary" :disabled="loading">
-                  <span v-if="loading" class="spinner-border spinner-border-sm me-2"></span>
+                <button type="submit" class="btn btn-primary" :disabled="loading || musicLoading">
+                  <span v-if="loading || musicLoading" class="spinner-border spinner-border-sm me-2"></span>
                   {{ isEditMode ? 'Actualizar Invitación' : 'Crear Invitación' }}
                 </button>
               </div>
@@ -216,9 +351,11 @@
 
 <script setup lang="ts">
 import { useRouter, useNuxtApp, useRoute } from '#imports'
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import { useInvitations } from '~/composables/useInvitations'
 import { useWeddingIcons } from '~/composables/useWeddingIcons'
+import { useMusic } from '~/composables/useMusic'
+import type { MusicTrack } from '~/types/invitation'
 
 definePageMeta({
   layout: 'admin',
@@ -231,12 +368,22 @@ const { $supabase } = useNuxtApp()
 const { user } = useAuth()
 const { templates, loadTemplates, createInvitation, updateInvitation } = useInvitations()
 const { predefinedIcons } = useWeddingIcons()
+const { 
+  musicTracks, 
+  loadMusicTracks, 
+  uploadCustomMusic, 
+  validateAudioFile, 
+  formatDuration,
+  deleteCustomMusic,
+  loading: musicLoading 
+} = useMusic()
 
 const isEditMode = computed(() => !!route.query.edit)
 const invitationId = computed(() => route.query.edit as string)
 
 const form = ref({
   template_id: '',
+  music_id: '',
   groom_name: '',
   bride_name: '',
   groom_description: '',
@@ -250,6 +397,28 @@ const form = ref({
 })
 
 const loading = ref(false)
+
+// Computed properties para música
+const predefinedMusic = computed(() => {
+  return musicTracks.value.filter(track => track.type === 'predefined')
+})
+
+const customMusic = computed(() => {
+  return musicTracks.value.filter(track => track.type === 'custom')
+})
+
+const selectedMusic = computed(() => {
+  if (!form.value.music_id) return null
+  return musicTracks.value.find(track => track.id === form.value.music_id)
+})
+
+// Watcher para detectar cambios en la música seleccionada
+watch(selectedMusic, (newMusic, oldMusic) => {
+  if (newMusic?.id !== oldMusic?.id) {
+    console.log('Música cambiada de:', oldMusic?.name, 'a:', newMusic?.name)
+    resetAudioPlayer()
+  }
+})
 
 const parseJsonField = (field: any, defaultValue: any) => {
   if (!field) return defaultValue
@@ -266,13 +435,24 @@ const parseJsonField = (field: any, defaultValue: any) => {
 }
 
 onMounted(async () => {
-  await loadTemplates()
+  console.log('Iniciando carga de datos...')
+  await Promise.all([
+    loadTemplates(),
+    loadMusicTracks()
+  ])
+  
+  console.log('Música cargada:', musicTracks.value)
+  console.log('Música predefinida:', predefinedMusic.value)
+  console.log('Música personalizada:', customMusic.value)
   
   if (isEditMode.value && invitationId.value) {
     try {
       const { data: allData, error: checkError } = await $supabase
         .from('invitations')
-        .select('*')
+        .select(`
+          *,
+          music:music_tracks(*)
+        `)
         .eq('id', invitationId.value)
       
       if (checkError) {
@@ -292,6 +472,7 @@ onMounted(async () => {
       
       form.value = {
         template_id: data.template_id || '',
+        music_id: data.music_id || '',
         groom_name: data.groom_name || '',
         bride_name: data.bride_name || '',
         groom_description: data.groom_description || '',
@@ -387,6 +568,87 @@ const addTimelineEvent = () => {
 
 const removeTimelineEvent = (index: number) => {
   form.value.wedding_timeline.splice(index, 1)
+}
+
+// Funciones para manejar música
+const selectNoMusic = () => {
+  console.log('Seleccionando: Sin música')
+  form.value.music_id = ''
+  resetAudioPlayer()
+}
+
+const selectMusic = (music: MusicTrack) => {
+  console.log('Seleccionando música:', music)
+  form.value.music_id = music.id
+  console.log('music_id actualizado a:', form.value.music_id)
+  resetAudioPlayer()
+}
+
+// Función para reiniciar el reproductor de audio
+const resetAudioPlayer = () => {
+  // Forzar re-renderizado del componente de audio
+  nextTick(() => {
+    setTimeout(() => {
+      const audioElement = document.querySelector('audio') as HTMLAudioElement
+      if (audioElement) {
+        audioElement.pause()
+        audioElement.currentTime = 0
+        audioElement.load() // Recargar el audio con la nueva fuente
+        console.log('Reproductor de audio reiniciado')
+      }
+    }, 100) // Pequeño delay para asegurar que el DOM se actualice
+  })
+}
+
+const onMusicFileChange = async (e: Event) => {
+  const target = e.target as HTMLInputElement
+  if (!target.files || !target.files[0]) return
+  
+  const file = target.files[0]
+  
+  // Validar archivo
+  const validation = validateAudioFile(file)
+  if (!validation.valid) {
+    alert(validation.error)
+    target.value = ''
+    return
+  }
+  
+  try {
+    const result = await uploadCustomMusic(file)
+    if (result) {
+      form.value.music_id = result.id
+      resetAudioPlayer()
+    }
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Error desconocido'
+    alert('Error subiendo la música: ' + errorMessage)
+    target.value = ''
+  }
+}
+
+const handleDeleteCustomMusic = async (musicId: string) => {
+  if (confirm('¿Estás seguro de que quieres eliminar esta música personalizada?')) {
+    const success = await deleteCustomMusic(musicId)
+    if (success) {
+      // Si la música eliminada era la seleccionada, deseleccionar
+      if (form.value.music_id === musicId) {
+        form.value.music_id = ''
+      }
+    } else {
+      alert('Error eliminando la música personalizada')
+    }
+  }
+}
+
+const debugMusicState = () => {
+  console.log('=== Estado de Música ===')
+  console.log('musicTracks:', musicTracks.value)
+  console.log('predefinedMusic:', predefinedMusic.value)
+  console.log('customMusic:', customMusic.value)
+  console.log('selectedMusic:', selectedMusic.value)
+  console.log('form.music_id:', form.value.music_id)
+  console.log('musicLoading:', musicLoading.value)
 }
 
 const handleSubmit = async () => {

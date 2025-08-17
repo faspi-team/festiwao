@@ -1,4 +1,4 @@
-import type { Invitation, Template, CreateInvitationData } from '~/types/invitation'
+import type { Invitation, Template, CreateInvitationData, MusicTrack, CreateMusicTrackData } from '~/types/invitation'
 
 export const useInvitations = () => {
   const { $supabase } = useNuxtApp()
@@ -6,6 +6,7 @@ export const useInvitations = () => {
 
   const invitations = ref<Invitation[]>([])
   const templates = ref<Template[]>([])
+  const musicTracks = ref<MusicTrack[]>([])
   const loading = ref(false)
 
   const loadInvitations = async () => {
@@ -19,7 +20,10 @@ export const useInvitations = () => {
     try {
       const { data, error } = await $supabase
         .from('invitations')
-        .select('*')
+        .select(`
+          *,
+          music:music_tracks(*)
+        `)
         .order('created_at', { ascending: false })
       
       if (error) {
@@ -51,6 +55,42 @@ export const useInvitations = () => {
     }
   }
 
+  const loadMusicTracks = async () => {
+    try {
+      const { data, error } = await $supabase
+        .from('music_tracks')
+        .select('*')
+        .order('name')
+      
+      if (error) throw error
+      musicTracks.value = data || []
+    } catch (error) {
+      console.error('Error loading music tracks:', error)
+      musicTracks.value = []
+    }
+  }
+
+  const createMusicTrack = async (musicData: CreateMusicTrackData): Promise<MusicTrack | null> => {
+    if (!user.value) return null
+    
+    try {
+      const { data, error } = await $supabase
+        .from('music_tracks')
+        .insert(musicData)
+        .select()
+        .single()
+      
+      if (error) throw error
+      
+      musicTracks.value.push(data)
+      
+      return data
+    } catch (error) {
+      console.error('Error creating music track:', error)
+      return null
+    }
+  }
+
   const createInvitation = async (invitationData: CreateInvitationData): Promise<Invitation | null> => {
     if (!user.value) return null
     
@@ -62,7 +102,10 @@ export const useInvitations = () => {
           ...invitationData,
           unique_url: generateUniqueUrl()
         })
-        .select()
+        .select(`
+          *,
+          music:music_tracks(*)
+        `)
         .single()
       
       if (error) throw error
@@ -80,7 +123,10 @@ export const useInvitations = () => {
     try {
       const { data, error } = await $supabase
         .from('invitations')
-        .select('*')
+        .select(`
+          *,
+          music:music_tracks(*)
+        `)
         .eq('unique_url', uniqueUrl)
         .eq('is_active', true)
         .single()
@@ -101,7 +147,10 @@ export const useInvitations = () => {
         .from('invitations')
         .update(invitationData)
         .eq('id', id)
-        .select()
+        .select(`
+          *,
+          music:music_tracks(*)
+        `)
       
       console.log('Update result:', { data, error })
       return data?.[0] || null
@@ -157,9 +206,12 @@ export const useInvitations = () => {
   return {
     invitations: readonly(invitations),
     templates: readonly(templates),
+    musicTracks: readonly(musicTracks),
     loading: readonly(loading),
     loadInvitations,
     loadTemplates,
+    loadMusicTracks,
+    createMusicTrack,
     createInvitation,
     updateInvitation,
     getInvitationByUrl,

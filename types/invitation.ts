@@ -6,6 +6,16 @@ export interface Template {
   updated_at: string
 }
 
+export interface MusicTrack {
+  id: string
+  name: string
+  type: 'predefined' | 'custom'
+  url?: string
+  file_path?: string
+  created_at: string
+  updated_at: string
+}
+
 export interface StoryEvent {
   id: string
   title: string
@@ -26,6 +36,7 @@ export interface Invitation {
   id: string
   user_id: string
   template_id?: string
+  music_id?: string
   groom_name?: string
   groom_description?: string
   bride_name?: string
@@ -40,6 +51,8 @@ export interface Invitation {
   created_at: string
   updated_at: string
   photo_url?: string
+  // Relación con música (opcional, para cuando se hace JOIN)
+  music?: MusicTrack
 }
 
 export interface RSVPResponse {
@@ -54,6 +67,7 @@ export interface RSVPResponse {
 
 export interface CreateInvitationData {
   template_id?: string
+  music_id?: string
   groom_name?: string
   groom_description?: string
   bride_name?: string
@@ -64,4 +78,11 @@ export interface CreateInvitationData {
   photo_url?: string
   story?: string
   wedding_timeline?: string
+}
+
+export interface CreateMusicTrackData {
+  name: string
+  type: 'predefined' | 'custom'
+  url?: string
+  file_path?: string
 } 

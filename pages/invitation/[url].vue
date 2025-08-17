@@ -5,6 +5,51 @@
       </div>
     </div>
   <div v-if="invitation">    
+    <!-- Reproductor de música flotante -->
+    <div 
+      v-if="invitation.music && invitation.music.url" 
+      class="music-player-container"
+    >
+      <div class="music-player">
+        <div class="music-controls">
+          <button 
+            @click="toggleMusic" 
+            class="btn btn-primary btn-sm rounded-circle me-2"
+            :title="isPlaying ? 'Pausar música' : 'Reproducir música'"
+            :disabled="!audioLoaded"
+          >
+            <i :class="isPlaying ? 'fas fa-pause' : 'fas fa-play'"></i>
+          </button>
+          <div class="music-info">
+            <small class="text-muted d-block">{{ invitation.music.name }}</small>
+            <small v-if="!audioLoaded" class="text-muted d-block">Cargando...</small>
+            <small v-else-if="!isPlaying && !autoplayBlocked" class="text-primary d-block">Reproducción automática en 2s...</small>
+            <small v-else-if="!isPlaying && autoplayBlocked" class="text-warning d-block">Click para reproducir</small>
+            <small v-else class="text-success d-block">Reproduciendo</small>
+          </div>
+          <button 
+            @click="toggleMute" 
+            class="btn btn-outline-secondary btn-sm rounded-circle ms-2"
+            :title="isMuted ? 'Activar sonido' : 'Silenciar'"
+            :disabled="!audioLoaded || !isPlaying"
+          >
+            <i :class="isMuted ? 'fas fa-volume-mute' : 'fas fa-volume-up'"></i>
+          </button>
+        </div>
+        <audio
+          ref="audioPlayer"
+          :src="invitation.music.url"
+          loop
+          preload="metadata"
+          @loadeddata="onAudioLoaded"
+          @play="isPlaying = true"
+          @pause="isPlaying = false"
+          @ended="isPlaying = false"
+          @error="onAudioError"
+        />
+      </div>
+    </div>
+    
     <div class="container-fluid carousel-header px-0">
     <div id="carouselId" class="carousel slide" data-bs-ride="carousel">
         <div class="carousel-inner" role="listbox">
@@ -229,9 +274,114 @@
   
 </template>
 
+<style scoped>
+.music-player-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  animation: fadeInRight 1s ease-out 2s both;
+}
+
+.music-player {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  padding: 12px 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  min-width: 280px;
+}
+
+.music-controls {
+  display: flex;
+  align-items: center;
+}
+
+.music-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.music-info small {
+  font-size: 0.75rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  line-height: 1.2;
+}
+
+.btn {
+  transition: all 0.3s ease;
+}
+
+.btn:hover {
+  transform: scale(1.05);
+}
+
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .music-player-container {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+  }
+  
+  .music-player {
+    min-width: auto;
+    padding: 10px 12px;
+  }
+  
+  .music-info small {
+    font-size: 0.7rem;
+  }
+}
+
+/* Mejoras visuales para el cursor */
+.music-controls button {
+  cursor: pointer;
+}
+
+.music-controls button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.music-player {
+  user-select: none;
+}
+
+/* Animación para el estado de carga */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.music-info small:first-of-type {
+  animation: pulse 2s infinite;
+}
+
+/* Estilo para texto de advertencia */
+.text-warning {
+  color: #ffc107 !important;
+}
+</style>
+
 <script setup lang="ts">
 
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 
 const route = useRoute()
 const { getInvitationByUrl, formatDate } = useInvitations()
@@ -242,6 +392,13 @@ definePageMeta({
 
 const invitation = ref<any>(null)
 const loading = ref(true)
+
+// Variables para el reproductor de música
+const audioPlayer = ref<HTMLAudioElement | null>(null)
+const isPlaying = ref(false)
+const isMuted = ref(false)
+const audioLoaded = ref(false)
+const autoplayBlocked = ref(false)
 
 const storyEvents = computed(() => {
   if (!invitation.value?.story) return []
@@ -284,8 +441,6 @@ const formatStoryDate = (dateString: string): string => {
   }).toUpperCase()
 }
 
-
-
 function updateCountdown() {
   if (!invitation.value?.event_date) return
   const eventDate = new Date(invitation.value.event_date)
@@ -319,7 +474,61 @@ onMounted(() => {
 
 onUnmounted(() => {
   clearInterval(interval)
+  // Pausar música cuando se desmonta el componente
+  if (audioPlayer.value) {
+    audioPlayer.value.pause()
+  }
 })
+
+// Funciones del reproductor de música
+const toggleMusic = () => {
+  if (!audioPlayer.value || !audioLoaded.value) return
+  
+  if (isPlaying.value) {
+    audioPlayer.value.pause()
+  } else {
+    audioPlayer.value.play().catch(error => {
+      console.log('Reproducción manual iniciada por el usuario')
+    })
+  }
+}
+
+const toggleMute = () => {
+  if (!audioPlayer.value) return
+  
+  isMuted.value = !isMuted.value
+  audioPlayer.value.muted = isMuted.value
+}
+
+const onAudioLoaded = () => {
+  audioLoaded.value = true
+  if (audioPlayer.value) {
+    // Configurar volumen inicial
+    audioPlayer.value.volume = 0.5
+    
+    // Intentar autoplay después de 2 segundos
+    setTimeout(() => {
+      if (audioPlayer.value && audioLoaded.value) {
+        audioPlayer.value.play().then(() => {
+          console.log('Autoplay exitoso')
+          autoplayBlocked.value = false
+        }).catch(error => {
+          // Si el autoplay falla, marcar como bloqueado
+          console.log('Autoplay bloqueado por el navegador - el usuario puede reproducir manualmente')
+          autoplayBlocked.value = true
+        })
+      }
+    }, 2000)
+  }
+}
+
+const onAudioError = (event: Event) => {
+  const audioElement = event.target as HTMLAudioElement
+  console.error('Error de reproducción de audio:', audioElement.error)
+  audioLoaded.value = false
+  isPlaying.value = false
+  // Opcional: mostrar un mensaje de error al usuario
+}
 
 onMounted(async () => {
   await loadInvitation()
