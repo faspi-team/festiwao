@@ -85,7 +85,6 @@
             <table class="table table-hover">
               <thead>
                 <tr>
-                  <th>Título</th>
                   <th>Pareja</th>
                   <th>Fecha</th>
                   <th>Acciones</th>
@@ -108,13 +107,6 @@
                         title="Ver invitación"
                       >
                         <i class="ti ti-eye"></i>
-                      </NuxtLink>
-                      <NuxtLink 
-                        :to="`/admin/gallery/${invitation.unique_url}`" 
-                        class="btn btn-outline-info"
-                        title="Gestionar galería"
-                      >
-                        <i class="ti ti-photo"></i>
                       </NuxtLink>
                       <button 
                         class="btn btn-outline-secondary"

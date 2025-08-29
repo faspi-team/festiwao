@@ -26,69 +26,118 @@
             </button>
           </div>
           
-          <div v-else class="row">
-            <div v-for="invitation in invitations" :key="invitation.id" class="col-md-6 col-lg-4 mb-4">
-              <div class="card invitation-card">
-                <div class="card-body">
-                  <div class="d-flex justify-content-between align-items-start mb-3">
-                    <h6 class="card-title mb-0">Invitación</h6>
-                    <div class="dropdown">
-                      <button class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
-                          <i class="ti ti-dots"></i>
-                      </button>
-                      <ul class="dropdown-menu">
-                        <li>
-                          <a class="dropdown-item" href="#" @click="viewInvitation(invitation)">
-                            <i class="ti ti-eye"></i> Ver
-                          </a>
-                        </li>
-                        <li>
-                          <a class="dropdown-item" href="#" @click="copyUrl(invitation)">
-                            <i class="ti ti-copy"></i> Copiar URL
-                          </a>
-                        </li>
-                        <li v-if="invitation.user_id === user?.id">
-                          <NuxtLink :to="`/invitations/create?edit=${invitation.id}`" class="dropdown-item" @click="console.log('Editing invitation:', invitation.id)">
-                            <i class="ti ti-edit"></i> Editar
-                          </NuxtLink>
-                        </li>
-                        <li v-if="invitation.user_id === user?.id"><hr class="dropdown-divider"></li>
-                        <li v-if="invitation.user_id === user?.id">
-                          <a class="dropdown-item text-danger" href="#" @click="deleteInvitation(invitation.id)">
-                            <i class="ti ti-trash"></i> Eliminar
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                  
-                  <div class="invitation-preview mb-3">
-                    <div class="text-center">
-                      <div v-if="invitation.photo_url" class="mb-2">
-                        <img :src="invitation.photo_url" alt="Foto invitación" class="img-thumbnail" style="max-height: 120px;">
+          <div v-else class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Pareja</th>
+                  <th>Fecha del Evento</th>   
+                  <th>Estado</th>
+                  <th>Creada</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="invitation in invitations" :key="invitation.id">
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <div class="me-3">
+                        <img 
+                          :src="invitation.photo_url || '/assets/images/default-invitation.svg'" 
+                          :alt="invitation.photo_url ? 'Foto invitación' : 'Imagen por defecto'"
+                          class="rounded-circle"
+                          style="width: 50px; height: 50px; object-fit: cover;"
+                          @error="handleImageError"
+                          data-bs-toggle="tooltip"
+                          data-bs-placement="top"
+                          :data-bs-title="invitation.photo_url ? 'Foto personalizada de la invitación' : 'Imagen por defecto de la invitación'"
+                        >
                       </div>
-                      <div class="couple-names">
-                        <span class="groom">{{ invitation.groom_name || 'Novio' }}</span>
-                        <span class="and">&</span>
-                        <span class="bride">{{ invitation.bride_name || 'Novia' }}</span>
-                      </div>
-                      <div class="date mt-2">
-                        {{ formatDate(invitation.event_date) }}
+                      <div>
+                        <div class="fw-bold">
+                          {{ invitation.groom_name || 'Novio' }} & {{ invitation.bride_name || 'Novia' }}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  
-                  <div class="invitation-stats">
+                  </td>
+                  <td>
+                    <div>
+                      <div class="fw-medium">{{ formatDate(invitation.event_date) }}</div>
+                      <small class="text-muted">{{ formatDateTime(invitation.event_date) }}</small>
+                    </div>
+                  </td>
+                  <td>
+                    <span 
+                      class="badge"
+                      :class="invitation.is_active ? 'bg-success' : 'bg-secondary'"
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="top"
+                      :data-bs-title="invitation.is_active ? 'La invitación está activa y visible públicamente' : 'La invitación está inactiva y no es visible públicamente'"
+                    >
+                      {{ invitation.is_active ? 'Activa' : 'Inactiva' }}
+                    </span>
+                  </td>
+                  <td>
                     <small class="text-muted">
-                      <i class="ti ti-calendar"></i> {{ formatDate(invitation.created_at) }}
+                      <i class="ti ti-calendar me-1"></i>
+                      {{ formatDate(invitation.created_at) }}
                     </small>
-                    <small v-if="invitation.user_id !== user?.id" class="text-muted d-block">
-                      <i class="ti ti-user"></i> Creada por otro usuario
-                    </small>
-                   </div>
-                </div>
-              </div>
-            </div>
+                  </td>
+                  <td>
+                    <div class="btn-group btn-group-sm">
+                      <button 
+                        @click="viewInvitation(invitation)" 
+                        class="btn btn-outline-primary"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="top"
+                        data-bs-title="Ver invitación"
+                      >
+                        <i class="ti ti-eye"></i>
+                      </button>
+                      <button 
+                        @click="copyUrl(invitation)" 
+                        class="btn btn-outline-secondary"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="top"
+                        data-bs-title="Copiar URL de la invitación"
+                      >
+                        <i class="ti ti-copy"></i>
+                      </button>
+                      <NuxtLink 
+                        v-if="invitation.user_id === user?.id"
+                        :to="`/admin/gallery/${invitation.unique_url}`" 
+                        class="btn btn-outline-info"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="top"
+                        data-bs-title="Gestionar galería"
+                      >
+                        <i class="ti ti-photo"></i>
+                      </NuxtLink>
+                      <NuxtLink 
+                        v-if="invitation.user_id === user?.id"
+                        :to="`/invitations/create?edit=${invitation.id}`" 
+                        class="btn btn-outline-warning"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="top"
+                        data-bs-title="Editar"
+                      >
+                        <i class="ti ti-edit"></i>
+                      </NuxtLink>
+                      <!-- <button 
+                        v-if="invitation.user_id === user?.id"
+                        @click="deleteInvitation(invitation.id)" 
+                        class="btn btn-outline-danger"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="top"
+                        data-bs-title="Eliminar invitación permanentemente"
+                      >
+                        <i class="ti ti-trash"></i>
+                      </button> -->
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
@@ -110,7 +159,8 @@ const {
   loadTemplates, 
   createInvitation: createInvitationComposable,
   deleteInvitation: deleteInvitationComposable,
-  formatDate 
+  formatDate,
+  formatDateTime
 } = useInvitations()
 
 const { user } = useAuth()
@@ -132,6 +182,19 @@ watch(user, async (newUser) => {
     await loadTemplates()
   }
 }, { immediate: true })
+
+onMounted(() => {
+  initializeTooltips()
+})
+
+onUpdated(() => {
+  initializeTooltips()
+})
+
+const initializeTooltips = () => {
+  const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+  const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new (window as any).bootstrap.Tooltip(tooltipTriggerEl))
+}
 
 const createInvitation = async () => {
   creating.value = true
@@ -176,37 +239,64 @@ const deleteInvitation = async (id: string) => {
     console.error('Error deleting invitation')
   }
 }
+
+const handleImageError = (event: Event) => {
+  const img = event.target as HTMLImageElement
+  img.src = '/assets/images/default-invitation.svg'
+}
 </script>
 
 <style scoped>
-.invitation-card {
-  transition: transform 0.2s;
-  cursor: pointer;
-}
-
-.invitation-card:hover {
-  transform: translateY(-2px);
-}
-
-.couple-names {
-  font-size: 1.2rem;
+.table th {
   font-weight: 600;
+  color: #495057;
+  border-bottom: 2px solid #dee2e6;
 }
 
-.couple-names .and {
-  color: #666;
-  margin: 0 0.5rem;
+.table td {
+  vertical-align: middle;
 }
 
-.date {
-  color: #666;
-  font-size: 0.9rem;
+.btn-group-sm .btn {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
 }
 
-.invitation-preview {
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-  border-radius: 8px;
-  padding: 1rem;
+/* Estilos para la imagen por defecto */
+.table img[src*="default-invitation.svg"] {
+  background-color: #f8f9fa;
+  border: 2px solid #dee2e6;
+  padding: 2px;
+}
+
+/* Estilos para tooltips personalizados */
+.tooltip {
+  font-size: 0.875rem;
+}
+
+.tooltip-inner {
+  background-color: #495057;
+  color: white;
+  border-radius: 6px;
+  padding: 8px 12px;
+  max-width: 250px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.tooltip.bs-tooltip-top .tooltip-arrow::before {
+  border-top-color: #495057;
+}
+
+.tooltip.bs-tooltip-bottom .tooltip-arrow::before {
+  border-bottom-color: #495057;
+}
+
+.tooltip.bs-tooltip-start .tooltip-arrow::before {
+  border-left-color: #495057;
+}
+
+.tooltip.bs-tooltip-end .tooltip-arrow::before {
+  border-right-color: #495057;
 }
 
 .modal.show {
