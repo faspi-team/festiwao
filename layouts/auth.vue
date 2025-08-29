@@ -13,7 +13,7 @@
             </div>
             <div class="col-auto my-1">
               <ul class="list-inline footer-link mb-0">
-                <li class="list-inline-item"><NuxtLink to="#">Contact us</NuxtLink></li>
+                <li class="list-inline-item"><NuxtLink to="#">Contáctanos</NuxtLink></li>
               </ul>
             </div>
           </div>
@@ -25,14 +25,19 @@
 
 <script setup>
   useHead({
-    title: 'Login | Mantis Bootstrap 5 Admin Template',
+    title: 'FestiWao | Iniciar Sesión',
+    htmlAttrs: {
+      lang: 'es'
+    },
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui' },
       { 'http-equiv': 'X-UA-Compatible', content: 'IE=edge' },
-      { name: 'description', content: 'Mantis is made using Bootstrap 5 design framework.' },
-      { name: 'keywords', content: 'Mantis, Dashboard UI Kit, Bootstrap 5, Admin Template' },
-      { name: 'author', content: 'CodedThemes' }
+      { name: 'language', content: 'es' },
+      { name: 'lang', content: 'es' },
+      { name: 'description', content: 'Sistema de invitaciones de boda - FestiWao' },
+      { name: 'keywords', content: 'FestiWao, Invitaciones, Boda, Wedding, Bootstrap 5' },
+      { name: 'author', content: 'FASPI' }
     ],
     link: [
       { rel: 'icon', href: '/favicon.svg', type: 'image/x-icon' },

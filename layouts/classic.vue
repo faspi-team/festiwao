@@ -5,13 +5,10 @@
     <div class="container-fluid copyright py-4">
         <div class="container">
             <div class="row g-4 align-items-center">
-                <div class="col-md-6 text-center text-md-start mb-md-0">
+                <div class="col-md-12 text-center mb-md-0">
                     <span class="text-light">
                         <a href="#"><i class="fas fa-copyright text-light me-2"></i>FestiWao</a>,
-                        All right reserved.</span>
-                </div>
-                <div class="col-md-6 text-center text-md-end text-white">
-                    Designed By <a class="border-bottom" href="https://htmlcodex.com">FASPI</a>
+                        Todos los derechos reservados.</span>
                 </div>
             </div>
         </div>
@@ -25,11 +22,16 @@
 
 <script setup lang="ts">
 useHead({
-    title: 'Mr&Mrs - Wedding Bootstrap Template',
+    title: 'FestiWao - Invitaciones de Boda',
+    htmlAttrs: {
+        lang: 'es'
+    },
     meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui' },
         { 'http-equiv': 'X-UA-Compatible', content: 'IE=edge' },
+        { name: 'language', content: 'es' },
+        { name: 'lang', content: 'es' },
     ],
     link: [
         { rel: 'icon', href: '/favicon.svg', type: 'image/x-icon' },

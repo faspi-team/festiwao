@@ -100,7 +100,7 @@
         </div>
         <div class="col-auto my-1">
           <ul class="list-inline footer-link mb-0">
-            <li class="list-inline-item"><a href="/">Home</a></li>
+            <li class="list-inline-item"><a href="/">Inicio</a></li>
           </ul>
         </div>
       </div>
@@ -120,12 +120,17 @@
   }
 
   useHead({
-    title: 'Admin | Dashboard',
+    title: 'FestiWao | Panel de Administración',
+    htmlAttrs: {
+      lang: 'es'
+    },
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui' },
       { 'http-equiv': 'X-UA-Compatible', content: 'IE=edge' },
-      { name: 'description', content: 'Admin Dashboard' },
+      { name: 'language', content: 'es' },
+      { name: 'lang', content: 'es' },
+      { name: 'description', content: 'Panel de Administración - FestiWao' },
       { name: 'author', content: 'FASPI' }
     ],
     link: [

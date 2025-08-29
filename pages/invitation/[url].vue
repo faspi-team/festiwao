@@ -276,11 +276,9 @@
     </div>
     <div class="container position-relative py-5">
         <div class="text-center mx-auto pb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 800px;">
-            <h1 class="display-2 text-dark">Wedding Gallery</h1>
-            <p class="fs-5 text-dark">Lorem Ipsum is simply dummy text of the printing and typesetting</p>
+            <h1 class="display-2 text-dark">Galería de Fotos</h1>
         </div>
         <div class="row g-4">
-            <!-- Galería dinámica -->
             <template v-if="galleryPhotos.length > 0">
                 <div 
                     v-for="(photo, index) in galleryPhotos" 
