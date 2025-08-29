@@ -10,7 +10,7 @@
       v-if="invitation.music && invitation.music.url" 
       class="music-player-container"
     >
-      <div class="music-player">
+      <div class="music-player" style="opacity: 0.7;">
         <div class="music-controls">
           <button 
             @click="toggleMusic" 
