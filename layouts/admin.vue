@@ -95,7 +95,7 @@
       <div class="row">
         <div class="col-sm my-1">
           <p class="m-0"
-            >Generador de Invitaciones. Creado por <a href="https://themewagon.com/">FASPI</a>.</p
+            >Generador de Invitaciones | <a href="https://themewagon.com/">FestiWao</a> v1.0.0</p
           >
         </div>
         <div class="col-auto my-1">
