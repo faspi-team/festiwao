@@ -7,7 +7,7 @@
   <div v-if="invitation" :style="invitationStyles">
     <!-- Reproductor de música flotante -->
     <div v-if="invitation.music && invitation.music.url" class="music-player-container">
-      <div class="music-player" style="opacity: 0.7;">
+      <div class="music-player" >
         <div class="music-controls">
           <button @click="toggleMusic" class="btn btn-sm rounded-circle me-2"
             :style="{ backgroundColor: invitation.primary_color || '#fd5d5d', borderColor: invitation.primary_color || '#fd5d5d' }"
@@ -16,7 +16,7 @@
           </button>
           <div class="music-info">
             <small class="d-block" :style="{ color: invitation.text_color || '#2F2F2F' }">{{ invitation.music.name
-              }}</small>
+            }}</small>
           </div>
           <button @click="toggleMute" class="btn btn-outline-secondary btn-sm rounded-circle ms-2"
             :title="isMuted ? 'Activar sonido' : 'Silenciar'">
@@ -27,6 +27,31 @@
           @play="isPlaying = true" @pause="isPlaying = false" @ended="isPlaying = false" @error="onAudioError" />
       </div>
     </div>
+
+    <!-- Navbar start -->
+    <div class="container-fluid sticky-top px-0">
+      <div class="container-fluid">
+        <div class="container px-0">
+          <nav class="navbar navbar-light navbar-expand-xl px-md-0" id="navBar">
+            <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse"
+              data-bs-target="#navbarCollapse">
+              <span class="fa fa-bars text-primary"></span>
+            </button>
+            <div class="collapse navbar-collapse py-3" id="navbarCollapse">
+              <div class="navbar-nav me-auto border-top">
+                <a href="#weddingHome" class="nav-item nav-link active">Inicio</a>
+                <a href="#weddingAbout" class="nav-item nav-link">Sobre nosotros</a>
+                <a href="#weddingStory" class="nav-item nav-link">Nuestra historia</a>
+                <a href="#weddingTimeline" class="nav-item nav-link">Detalles del evento</a>
+                <a href="#weddingGallery" class="nav-item nav-link">Galeria</a>
+                <a :href="whatsappUrl" target="_blank" class="nav-item nav-link"><i class="fab fa-whatsapp"></i> Confirmar asistencia</a>
+              </div>
+            </div>
+          </nav>
+        </div>
+      </div>
+    </div>
+    <!-- Navbar End -->
 
     <div class="container-fluid carousel-header px-0">
       <div id="carouselId" class="carousel slide" data-bs-ride="carousel">
@@ -72,8 +97,7 @@
               <div class="col-lg-5 wow fadeInUp" data-wow-delay="0.3s">
                 <div class="d-flex">
                   <div class="text-end my-auto pe-4">
-                    <h3 class="mb-3" :style="{ color: invitation.primary_color || '#fd5d5d' }">{{ invitation.bride_name
-                      }}</h3>
+                    <h3 class="mb-3" :style="{ color: invitation.primary_color || '#fd5d5d' }">{{ invitation.bride_name}}</h3>
                     <p class="mb-0" :style="{ color: invitation.text_color || '#2F2F2F', lineHeight: '30px' }">{{
                       invitation.bride_description }}</p>
                   </div>
@@ -89,8 +113,7 @@
                 <div class="d-flex">
                   <img src="/assets/layouts/classic/img/Groom.jpg" class="img-fluid img-border" alt="">
                   <div class="my-auto ps-4">
-                    <h3 class="mb-3" :style="{ color: invitation.primary_color || '#fd5d5d' }">{{ invitation.groom_name
-                      }}</h3>
+                    <h3 class="mb-3" :style="{ color: invitation.primary_color || '#fd5d5d' }">{{ invitation.groom_name}}</h3>
                     <p class="mb-0" :style="{ color: invitation.text_color || '#2F2F2F', lineHeight: '30px' }">{{
                       invitation.groom_description }}</p>
                   </div>
@@ -310,13 +333,12 @@
           <p class="lead mb-5" :style="{ color: invitation.text_color || '#2F2F2F' }">
             Haz clic en el botón de abajo para confirmar tu asistencia a través de WhatsApp
           </p>
-
           <div class="d-flex justify-content-center">
-            <a :href="whatsappUrl" target="_blank" class="btn btn-lg px-5 py-3 text-white fw-bold" :style="{
+            <a :href="whatsappUrl" target="_blank" class="btn btn-md px-5 py-3 text-white fw-bold" :style="{
               backgroundColor: invitation.primary_color || '#fd5d5d',
               borderColor: invitation.primary_color || '#fd5d5d'
             }" style="border-radius: 50px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
-              <i class="fab fa-whatsapp me-3" style="font-size: 1.5rem;"></i>
+              <i class="fab fa-whatsapp me-3"></i>
               Confirmar Asistencia
             </a>
           </div>
@@ -340,7 +362,7 @@
   position: fixed;
   top: 20px;
   right: 20px;
-  z-index: 1000;
+  z-index: 2000;
   animation: fadeInRight 1s ease-out 2s both;
 }
 
@@ -348,7 +370,7 @@
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
   border-radius: 15px;
-  padding: 12px 16px;
+  padding: 6px 16px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
   min-width: 280px;
@@ -394,16 +416,18 @@
 }
 
 /* Responsive para móviles */
-@media (max-width: 768px) {
+@media (max-width: 1200px) {
   .music-player-container {
     top: 10px;
-    right: 10px;
-    left: 10px;
+    right: 60px;
+    /* left: 60px; */
+    border: 0px;
   }
 
   .music-player {
     min-width: auto;
-    padding: 10px 12px;
+    padding: 5px 5px;
+    /* max-width: 380px; */
   }
 
   .music-info small {
@@ -411,7 +435,6 @@
   }
 }
 
-/* Mejoras visuales para el cursor */
 .music-controls button {
   cursor: pointer;
 }
@@ -420,7 +443,6 @@
   user-select: none;
 }
 
-/* Variables CSS personalizadas para colores */
 :root {
   --primary-color: #fd5d5d;
   --secondary-color: #BBBD98;
@@ -428,7 +450,6 @@
   --text-color: #2F2F2F;
 }
 
-/* Aplicar colores personalizados a elementos específicos */
 .text-primary {
   color: var(--primary-color) !important;
 }
@@ -479,19 +500,16 @@
   animation: pulse 2s infinite;
 }
 
-/* Estilo para texto de advertencia */
 .text-warning {
   color: #ffc107 !important;
 }
 
-/* Estilos para el botón de WhatsApp */
 .btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3) !important;
   transition: all 0.3s ease;
 }
 
-/* Animación para el botón de WhatsApp */
 @keyframes whatsappPulse {
   0% {
     transform: scale(1);
@@ -529,7 +547,6 @@ definePageMeta({
 const invitation = ref<any>(null)
 const loading = ref(true)
 
-// Variables para el reproductor de música
 const audioPlayer = ref<HTMLAudioElement | null>(null)
 const isPlaying = ref(false)
 const isMuted = ref(false)
@@ -635,7 +652,7 @@ onUnmounted(() => {
   }
 })
 
-// Funciones del reproductor de música
+// functions for music player
 const toggleMusic = () => {
   if (!audioPlayer.value || !audioLoaded.value) return
 
@@ -658,10 +675,8 @@ const toggleMute = () => {
 const onAudioLoaded = () => {
   audioLoaded.value = true
   if (audioPlayer.value) {
-    // Configurar volumen inicial
     audioPlayer.value.volume = 0.5
 
-    // Intentar autoplay después de 2 segundos
     setTimeout(() => {
       if (audioPlayer.value && audioLoaded.value) {
         audioPlayer.value.play().then(() => {
@@ -682,7 +697,6 @@ const onAudioError = (event: Event) => {
   console.error('Error de reproducción de audio:', audioElement.error)
   audioLoaded.value = false
   isPlaying.value = false
-  // Opcional: mostrar un mensaje de error al usuario
 }
 
 onMounted(async () => {
