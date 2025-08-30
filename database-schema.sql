@@ -33,6 +33,7 @@ CREATE TABLE invitations (
   venue TEXT,
   description TEXT,
   whatsapp_number VARCHAR(20),
+  google_maps_url VARCHAR(500),
   unique_url VARCHAR(255) UNIQUE NOT NULL,
   is_active BOOLEAN DEFAULT true,
   photo_url VARCHAR(255),

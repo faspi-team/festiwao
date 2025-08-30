@@ -99,6 +99,28 @@
                   </div>
                 </div>
               </div>
+              <div class="row">
+                <div class="col-md-8">
+                  <div class="mb-3">
+                    <label class="form-label">Enlace de Google Maps</label>
+                    <div class="input-group">
+                      <span class="input-group-text">
+                        <i class="fas fa-map-marker-alt text-danger"></i>
+                      </span>
+                      <input 
+                        v-model="form.google_maps_url" 
+                        type="url" 
+                        class="form-control" 
+                        placeholder="https://maps.google.com/..."
+                      >
+                    </div>
+                    <small class="text-muted">
+                      <i class="fas fa-info-circle me-1"></i>
+                      Los invitados podrán abrir la ubicación directamente en Google Maps
+                    </small>
+                  </div>
+                </div>
+              </div>
               <!-- Personalización de Colores -->
               <div class="mb-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
@@ -625,6 +647,7 @@ const form = ref({
   venue: '',
   description: '',
   whatsapp_number: '',
+  google_maps_url: '',
   story: [] as { id: string; title: string; date: string; description: string; image: string }[],
   wedding_timeline: [] as { id: string; title: string; time: string; description: string; icon: string }[],
   photo_url: '',
@@ -720,6 +743,7 @@ onMounted(async () => {
         venue: data.venue || '',
         description: data.description || '',
         whatsapp_number: data.whatsapp_number || '',
+        google_maps_url: data.google_maps_url || '',
         photo_url: data.photo_url || '',
         story: parseJsonField(data.story, []),
         wedding_timeline: parseJsonField(data.wedding_timeline, []),

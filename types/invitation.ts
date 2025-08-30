@@ -57,6 +57,7 @@ export interface Invitation {
   venue?: string
   description?: string
   whatsapp_number?: string
+  google_maps_url?: string
   unique_url: string
   is_active: boolean
   story?: StoryEvent[]
@@ -96,6 +97,7 @@ export interface CreateInvitationData {
   venue?: string
   description?: string
   whatsapp_number?: string
+  google_maps_url?: string
   photo_url?: string
   story?: string
   wedding_timeline?: string

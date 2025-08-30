@@ -189,8 +189,8 @@
                 :style="{ color: invitation.text_color || '#2F2F2F', letterSpacing: '3px' }">{{
                   formatDate(invitation.event_date) }}</h4>
             </div>
-            <h1 class="display-4" :style="{ color: invitation.text_color || '#2F2F2F' }">Nos casamos</h1>
-            <p class="fs-5" :style="{ color: invitation.text_color || '#2F2F2F' }">{{ invitation.venue }}</p>
+            <h1 class="display-4" :style="{ color: textColor }">Nos casamos</h1>
+            <p class="fs-5" :style="{ color: textColor }">{{ invitation.venue }}</p>
             <div class="d-flex align-items-center justify-content-center mb-5">
               <div class="fs-2 me-4" :style="{ color: invitation.text_color || '#2F2F2F' }">
                 <div>{{ countdown.days }}</div>
@@ -332,7 +332,7 @@
           <p class="lead mb-5" :style="{ color: textColor }">
             Haz clic en el botón de abajo para confirmar tu asistencia a través de WhatsApp
           </p>
-          <div class="d-flex justify-content-center">
+          <div class="d-flex justify-content-center gap-3 flex-wrap">
             <a :href="whatsappUrl" target="_blank" class="btn btn-md px-5 py-3 text-white fw-bold" :style="{
               backgroundColor: primaryColor,
               borderColor: primaryColor
@@ -340,12 +340,27 @@
               <i class="fab fa-whatsapp me-3"></i>
               Confirmar Asistencia
             </a>
+            <a 
+              v-if="invitation.google_maps_url" 
+              :href="invitation.google_maps_url" 
+              target="_blank" 
+              class="btn btn-md px-5 py-3 fw-bold"
+              :style="{ 
+                borderColor: primaryColor, 
+                color: primaryColor,
+                borderRadius: '50px',
+                boxShadow: '0 4px 15px rgba(0,0,0,0.1)'
+              }"
+            >
+              <i class="fas fa-map-marker-alt me-3"></i>
+              Ver Ubicación
+            </a>
           </div>
 
           <div class="mt-4">
             <small class="text-muted">
               <i class="fas fa-info-circle me-1"></i>
-              Se abrirá WhatsApp con un mensaje predefinido
+              Haz clic en "Confirmar Asistencia" para enviar un mensaje por WhatsApp
             </small>
           </div>
         </div>
