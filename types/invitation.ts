@@ -56,6 +56,7 @@ export interface Invitation {
   event_date?: string
   venue?: string
   description?: string
+  whatsapp_number?: string
   unique_url: string
   is_active: boolean
   story?: StoryEvent[]
@@ -94,6 +95,7 @@ export interface CreateInvitationData {
   event_date?: string
   venue?: string
   description?: string
+  whatsapp_number?: string
   photo_url?: string
   story?: string
   wedding_timeline?: string

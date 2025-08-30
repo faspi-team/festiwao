@@ -76,7 +76,29 @@
                 <label class="form-label">Descripción</label>
                 <textarea v-model="form.description" class="form-control" rows="3" placeholder="Detalles adicionales del evento"></textarea>
               </div>
-
+              <div class="row">
+                <div class="col-md-8">
+                  <div class="mb-3">
+                    <label class="form-label">Número de WhatsApp</label>
+                    <div class="input-group">
+                      <span class="input-group-text">
+                        <i class="fab fa-whatsapp text-success"></i>
+                      </span>
+                      <input 
+                        v-model="form.whatsapp_number" 
+                        type="tel" 
+                        class="form-control" 
+                        placeholder="+1234567890"
+                        pattern="^\+?[0-9\s\-\(\)]+$"
+                      >
+                    </div>
+                    <small class="text-muted">
+                      <i class="fas fa-info-circle me-1"></i>
+                      Los invitados podrán confirmar su asistencia directamente por WhatsApp
+                    </small>
+                  </div>
+                </div>
+              </div>
               <!-- Personalización de Colores -->
               <div class="mb-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
@@ -602,6 +624,7 @@ const form = ref({
   event_date: '',
   venue: '',
   description: '',
+  whatsapp_number: '',
   story: [] as { id: string; title: string; date: string; description: string; image: string }[],
   wedding_timeline: [] as { id: string; title: string; time: string; description: string; icon: string }[],
   photo_url: '',
@@ -696,6 +719,7 @@ onMounted(async () => {
         event_date: data.event_date ? new Date(data.event_date).toISOString().slice(0, 16) : '',
         venue: data.venue || '',
         description: data.description || '',
+        whatsapp_number: data.whatsapp_number || '',
         photo_url: data.photo_url || '',
         story: parseJsonField(data.story, []),
         wedding_timeline: parseJsonField(data.wedding_timeline, []),

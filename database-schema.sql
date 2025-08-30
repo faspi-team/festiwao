@@ -32,6 +32,7 @@ CREATE TABLE invitations (
   event_date TIMESTAMP WITH TIME ZONE,
   venue TEXT,
   description TEXT,
+  whatsapp_number VARCHAR(20),
   unique_url VARCHAR(255) UNIQUE NOT NULL,
   is_active BOOLEAN DEFAULT true,
   photo_url VARCHAR(255),
