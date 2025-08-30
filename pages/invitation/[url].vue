@@ -5,18 +5,18 @@
     </div>
   </div>
   <div v-if="invitation" :style="invitationStyles">
-    <!-- Reproductor de música flotante -->
+    <!-- music player -->
     <div v-if="invitation.music && invitation.music.url" class="music-player-container">
-      <div class="music-player" >
+      <div class="music-player">
         <div class="music-controls">
           <button @click="toggleMusic" class="btn btn-sm rounded-circle me-2"
-            :style="{ backgroundColor: invitation.primary_color || '#fd5d5d', borderColor: invitation.primary_color || '#fd5d5d' }"
+            :style="{ backgroundColor: primaryColor, borderColor: primaryColor }"
             :title="isPlaying ? 'Pausar música' : 'Reproducir música'">
             <i :class="isPlaying ? 'fas fa-pause' : 'fas fa-play'"></i>
           </button>
           <div class="music-info">
-            <small class="d-block" :style="{ color: invitation.text_color || '#2F2F2F' }">{{ invitation.music.name
-            }}</small>
+            <small class="d-block" :style="{ color: textColor }">{{ invitation.music.name
+              }}</small>
           </div>
           <button @click="toggleMute" class="btn btn-outline-secondary btn-sm rounded-circle ms-2"
             :title="isMuted ? 'Activar sonido' : 'Silenciar'">
@@ -44,7 +44,8 @@
                 <a href="#weddingStory" class="nav-item nav-link">Nuestra historia</a>
                 <a href="#weddingTimeline" class="nav-item nav-link">Detalles del evento</a>
                 <a href="#weddingGallery" class="nav-item nav-link">Galeria</a>
-                <a :href="whatsappUrl" target="_blank" class="nav-item nav-link"><i class="fab fa-whatsapp"></i> Confirmar asistencia</a>
+                <a :href="whatsappUrl" target="_blank" class="nav-item nav-link"><i class="fab fa-whatsapp"></i>
+                  Confirmar asistencia</a>
               </div>
             </div>
           </nav>
@@ -87,8 +88,8 @@
       </div>
       <div class="container position-relative py-5">
         <div class="mx-auto text-center mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 800;">
-          <h1 class="display-1" :style="{ color: invitation.primary_color || '#fd5d5d' }">Hola!</h1>
-          <h4 class="mb-0" :style="{ color: invitation.text_color || '#2F2F2F' }">Te invitamos a celebrar nuestra boda
+          <h1 class="display-1" :style="{ color: primaryColor }">Hola!</h1>
+          <h4 class="mb-0" :style="{ color: textColor }">Te invitamos a celebrar nuestra boda
           </h4>
         </div>
         <div class="row">
@@ -97,8 +98,8 @@
               <div class="col-lg-5 wow fadeInUp" data-wow-delay="0.3s">
                 <div class="d-flex">
                   <div class="text-end my-auto pe-4">
-                    <h3 class="mb-3" :style="{ color: invitation.primary_color || '#fd5d5d' }">{{ invitation.bride_name}}</h3>
-                    <p class="mb-0" :style="{ color: invitation.text_color || '#2F2F2F', lineHeight: '30px' }">{{
+                    <h3 class="mb-3" :style="{ color: primaryColor }">{{ invitation.bride_name }}</h3>
+                    <p class="mb-0" :style="{ color: textColor, lineHeight: '30px' }">{{
                       invitation.bride_description }}</p>
                   </div>
                   <img src="/assets/layouts/classic/img/bride.jpg" class="img-fluid img-border" alt="">
@@ -106,15 +107,15 @@
               </div>
               <div class="col-lg-2 wow fadeIn" data-wow-delay="0.5s">
                 <div class="d-flex align-items-center justify-content-center">
-                  <i class="fa fa-heart fa-5x" :style="{ color: invitation.primary_color || '#fd5d5d' }"></i>
+                  <i class="fa fa-heart fa-5x" :style="{ color: primaryColor }"></i>
                 </div>
               </div>
               <div class="col-lg-5 wow fadeInUp" data-wow-delay="0.3s">
                 <div class="d-flex">
                   <img src="/assets/layouts/classic/img/Groom.jpg" class="img-fluid img-border" alt="">
                   <div class="my-auto ps-4">
-                    <h3 class="mb-3" :style="{ color: invitation.primary_color || '#fd5d5d' }">{{ invitation.groom_name}}</h3>
-                    <p class="mb-0" :style="{ color: invitation.text_color || '#2F2F2F', lineHeight: '30px' }">{{
+                    <h3 class="mb-3" :style="{ color: primaryColor }">{{ invitation.groom_name }}</h3>
+                    <p class="mb-0" :style="{ color: textColor, lineHeight: '30px' }">{{
                       invitation.groom_description }}</p>
                   </div>
                 </div>
@@ -136,8 +137,8 @@
       </div>
       <div class="container position-relative py-5">
         <div class="text-center mb-5 wow fadeInUp" data-wow-delay="0.1s">
-          <h5 class="text-uppercase fw-bold mb-4" :style="{ color: invitation.primary_color || '#fd5d5d' }">Story</h5>
-          <h1 class="display-4" :style="{ color: invitation.text_color || '#2F2F2F' }">Nuestra historia de amor</h1>
+          <h5 class="text-uppercase fw-bold mb-4" :style="{ color: primaryColor }">Story</h5>
+          <h1 class="display-4" :style="{ color: textColor }">Nuestra historia de amor</h1>
         </div>
         <div class="story-timeline">
           <div v-for="(event, index) in storyEvents" :key="event.id" class="row wow fadeInUp"
@@ -152,8 +153,7 @@
               :class="index % 2 === 0 ? 'border-start pe-0' : 'text-end border-end ps-0'">
               <div class="h-100 d-flex flex-column justify-content-center bg-secondary p-4">
                 <h4 class="mb-2" :style="{ color: invitation.text_color || '#2F2F2F' }">{{ event.title }}</h4>
-                <p class="text-uppercase mb-2"
-                  :style="{ color: invitation.primary_color || '#fd5d5d', letterSpacing: '3px' }">
+                <p class="text-uppercase mb-2" :style="{ color: primaryColor, letterSpacing: '3px' }">
                   {{ formatStoryDate(event.date) }}
                 </p>
                 <p class="m-0 fs-5" :style="{ color: invitation.text_color || '#2F2F2F' }">{{ event.description }}</p>
@@ -242,12 +242,11 @@
             <div v-for="(event, index) in weddingTimeline" :key="event.id" class="col-6 col-md-4 col-lg-3">
               <div class="border rounded p-3 h-100 text-center wow fadeIn" :data-wow-delay="`${0.1 + index * 0.2}s`">
                 <div class="mb-4 p-3 d-inline-flex">
-                  <i :class="`${event.icon || 'fas fa-calendar'} fa-3x`"
-                    :style="{ color: invitation.primary_color || '#fd5d5d' }"></i>
+                  <i :class="`${event.icon || 'fas fa-calendar'} fa-3x`" :style="{ color: primaryColor }"></i>
                 </div>
-                <p :style="{ color: invitation.primary_color || '#fd5d5d' }">{{ event.time }}</p>
-                <h3 :style="{ color: invitation.text_color || '#2F2F2F' }">{{ event.title }}</h3>
-                <p :style="{ color: invitation.text_color || '#2F2F2F' }">{{ event.description }}</p>
+                <p :style="{ color: primaryColor }">{{ event.time }}</p>
+                <h3 :style="{ color: textColor }">{{ event.title }}</h3>
+                <p :style="{ color: textColor }">{{ event.description }}</p>
               </div>
             </div>
           </div>
@@ -306,8 +305,8 @@
           <template v-else>
             <div class="col-12 text-center">
               <div class="py-5">
-                <i class="fas fa-images fa-3x mb-3" :style="{ color: invitation.primary_color || '#fd5d5d' }"></i>
-                <h4 class="mb-3" :style="{ color: invitation.text_color || '#2F2F2F' }">Galería de Fotos</h4>
+                <i class="fas fa-images fa-3x mb-3" :style="{ color: primaryColor }"></i>
+                <h4 class="mb-3" :style="{ color: textColor }">Galería de Fotos</h4>
                 <p class="text-muted">Las fotos de nuestra boda aparecerán aquí pronto.</p>
               </div>
             </div>
@@ -327,16 +326,16 @@
       </div>
       <div class="container position-relative py-5">
         <div class="mx-auto text-center mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 800px;">
-          <h1 class="display-1" :style="{ color: invitation.primary_color || '#fd5d5d' }">¡Confirma tu asistencia!</h1>
-          <h4 class="mb-4" :style="{ color: invitation.text_color || '#2F2F2F' }">Nos encantaría que nos acompañes en
+          <h1 class="display-1" :style="{ color: primaryColor }">¡Confirma tu asistencia!</h1>
+          <h4 class="mb-4" :style="{ color: textColor }">Nos encantaría que nos acompañes en
             nuestro día especial</h4>
-          <p class="lead mb-5" :style="{ color: invitation.text_color || '#2F2F2F' }">
+          <p class="lead mb-5" :style="{ color: textColor }">
             Haz clic en el botón de abajo para confirmar tu asistencia a través de WhatsApp
           </p>
           <div class="d-flex justify-content-center">
             <a :href="whatsappUrl" target="_blank" class="btn btn-md px-5 py-3 text-white fw-bold" :style="{
-              backgroundColor: invitation.primary_color || '#fd5d5d',
-              borderColor: invitation.primary_color || '#fd5d5d'
+              backgroundColor: primaryColor,
+              borderColor: primaryColor
             }" style="border-radius: 50px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
               <i class="fab fa-whatsapp me-3"></i>
               Confirmar Asistencia
@@ -419,15 +418,11 @@
 @media (max-width: 1200px) {
   .music-player-container {
     top: 10px;
-    right: 60px;
-    /* left: 60px; */
     border: 0px;
   }
 
   .music-player {
-    min-width: auto;
     padding: 5px 5px;
-    /* max-width: 380px; */
   }
 
   .music-info small {
@@ -596,6 +591,12 @@ const whatsappUrl = computed(() => {
   return `https://wa.me/${numberWithCountry}?text=${message}`
 })
 
+// helper colors
+const primaryColor = computed(() => invitation.value?.primary_color || '#fd5d5d')
+const secondaryColor = computed(() => invitation.value?.secondary_color || '#BBBD98')
+const backgroundColor = computed(() => invitation.value?.background_color || '#ffffff')
+const textColor = computed(() => invitation.value?.text_color || '#2F2F2F')
+
 const countdown = ref({
   days: '00',
   hours: '00',
@@ -683,7 +684,6 @@ const onAudioLoaded = () => {
           console.log('Autoplay exitoso')
           autoplayBlocked.value = false
         }).catch(error => {
-          // Si el autoplay falla, marcar como bloqueado
           console.log('Autoplay bloqueado por el navegador - el usuario puede reproducir manualmente')
           autoplayBlocked.value = true
         })
